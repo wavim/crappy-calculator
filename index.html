@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Crappy Calculator</title>
+		<style>
+			#root {
+				overflow: hidden;
+				height: 95vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+			}
+			#calc {
+				all: initial;
+				overflow-x: scroll;
+				box-sizing: border-box;
+				padding: 5% 5%;
+				transform-origin: center center;
+				width: 50%;
+				height: 20%;
+				font-family: "Courier New", Courier, monospace;
+				letter-spacing: 0.2rem;
+				font-size: 2.5rem;
+				transition: box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+					transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+				background-color: #f4f7ff;
+				border-radius: 10%;
+			}
+			#calc:hover:not(:focus) {
+				box-shadow: 0 0 80px 30px rgba(124, 127, 147, 0.3);
+				transform: scale(1.1);
+			}
+			#calc:focus {
+				box-shadow: 0 0 40px rgba(124, 127, 147, 0.3);
+			}
+			#res {
+				padding-top: 2%;
+				font-family: "Courier New", Courier, monospace;
+				font-size: 2.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="root">
+			<input type="text" id="calc" placeholder="1 + 2 * 3 / 4" />
+			<p id="res">Input above to calculate something lol</p>
+		</div>
+		<script>
+			//#region CONSTANTS
+
+			const TOKEN_TYPES = ["NUM", "OP", "SEP", "INV"];
+
+			const TOKENS_RE = {
+				NUM: /(?:[\+\-])?\d+(?:\.\d+)?(e[+\-]\d+)?/,
+				OP: /[\+\-\*\/\^]/,
+				SEP: /\s+/,
+				INV: /.*/,
+			};
+
+			const OP_TYPES = {
+				"+": "BIN_ADD",
+				"-": "BIN_SUB",
+				"*": "BIN_MUL",
+				"/": "BIN_DIV",
+				"^": "BIN_POW",
+			};
+
+			//#endregion CONSTANTS
+
+			function calc(input) {
+				return eval(parse(lex(input)));
+			}
+
+			function lex(input) {
+				const tokens = [];
+				let res = input;
+				while (res.length > 0) {
+					let token;
+					let type;
+					for (let i = 0; i < TOKEN_TYPES.length; i++) {
+						type = TOKEN_TYPES[i];
+						const re = new RegExp(`^(?:${TOKENS_RE[type].source})`);
+						token = res.match(re)?.[0];
+						if (token === "-" && tokens.at(-1).type === "OP") continue;
+						if (token) break;
+					}
+					res = res.slice(token.length);
+
+					let val;
+					switch (type) {
+						case "NUM":
+							val = Number(token);
+							break;
+						case "OP":
+							val = OP_TYPES[token];
+							break;
+						case "SEP":
+							continue;
+						case "INV":
+							throw new SyntaxError();
+					}
+
+					if (type === "NUM" && tokens.at(-1)?.type === "NUM") tokens.push({ val: "BIN_ADD", type: "OP" });
+					tokens.push({
+						val,
+						type,
+					});
+				}
+				return tokens;
+			}
+
+			function parse(lexed) {
+				if (lexed[0] && lexed[1] && !lexed[2]) throw new SyntaxError();
+				let ast = {
+					left: lexed[0],
+					op: lexed[1] ?? { val: "BIN_ADD", type: "OP" },
+					right: lexed[2] ?? { val: 0, type: "NUM" },
+				};
+				for (let i = 0; i < (lexed.length - 3) / 2; i++) {
+					const op = lexed[3 + 2 * i];
+					const right = lexed[4 + 2 * i];
+					if (op.val === "BIN_ADD" || op.val === "BIN_SUB") {
+						ast = {
+							left: structuredClone(ast),
+							op,
+							right,
+						};
+						continue;
+					}
+					ast.right = {
+						left: structuredClone(ast.right),
+						op,
+						right,
+					};
+				}
+				console.log(ast);
+				return ast;
+			}
+
+			function eval(parsed) {
+				if (parsed.type === "NUM") return parsed.val;
+
+				const left = eval(parsed.left);
+				const op = parsed.op.val;
+				const right = eval(parsed.right);
+				if (op === "BIN_ADD") return left + right;
+				if (op === "BIN_SUB") return left - right;
+				if (op === "BIN_MUL") return left * right;
+				if (op === "BIN_DIV") return left / right;
+				if (op === "BIN_POW") return left ** right;
+			}
+		</script>
+		<script>
+			const input = document.getElementById("calc");
+			const res = document.getElementById("res");
+			res.textContent = calc(input.getAttribute("placeholder"));
+			input.oninput = () => {
+				if (input.value.length === 0) {
+					res.textContent = calc(input.getAttribute("placeholder"));
+					return;
+				}
+				try {
+					res.textContent = calc(input.value);
+				} catch {
+					res.textContent = "Invalid Input";
+				}
+			};
+		</script>
+	</body>
+</html>
