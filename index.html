@@ -71,10 +71,12 @@
 
 			//#endregion CONSTANTS
 
+			//calculation entry
 			function calc(input) {
 				return eval(parse(lex(input)));
 			}
 
+			//get lexical tokens
 			function lex(input) {
 				const tokens = [];
 				let res = input;
@@ -113,6 +115,7 @@
 				return tokens;
 			}
 
+			//get Abstract Syntax Tree
 			function parse(lexed) {
 				if (lexed[0] && lexed[1] && !lexed[2]) throw new SyntaxError();
 				let ast = {
@@ -141,6 +144,7 @@
 				return ast;
 			}
 
+			//recursively evaluates the value of AST
 			function eval(parsed) {
 				if (parsed.type === "NUM") return parsed.val;
 
