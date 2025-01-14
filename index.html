@@ -73,7 +73,7 @@
 
 			//calculation entry
 			function calc(input) {
-				return eval(parse(lex(input)));
+				return eval(parse(lex(input.trim())));
 			}
 
 			//get lexical tokens
@@ -106,7 +106,9 @@
 							throw new SyntaxError();
 					}
 
-					if (type === "NUM" && tokens.at(-1)?.type === "NUM") tokens.push({ val: "BIN_ADD", type: "OP" });
+					if (type === "NUM" && /^[\+\-]/.test(token) && tokens.at(-1)?.type === "NUM") {
+						tokens.push({ val: "BIN_ADD", type: "OP" });
+					}
 					tokens.push({
 						val,
 						type,
@@ -117,9 +119,8 @@
 
 			//get Abstract Syntax Tree
 			function parse(lexed) {
-				if (lexed[0] && lexed[1] && !lexed[2]) throw new SyntaxError();
 				let ast = {
-					left: lexed[0],
+					left: lexed[0] ?? { val: 0, type: "NUM" },
 					op: lexed[1] ?? { val: "BIN_ADD", type: "OP" },
 					right: lexed[2] ?? { val: 0, type: "NUM" },
 				};
@@ -140,7 +141,6 @@
 						right,
 					};
 				}
-				console.log(ast);
 				return ast;
 			}
 
