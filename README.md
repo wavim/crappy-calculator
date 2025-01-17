@@ -1,5 +1,8 @@
-So I was basically mad at a friend that used eval() to write his calculator. (Jokes)
+So I was basically mad at a friend that used `eval()` to write his calculator. (Jokes)
 
-This is built with a _Lexer_, a _Parser_ and an _Evaluator_, with the concepts of _Abstract Syntax Tree_.
+The calculator logic part is composed of a lexer (tokenizer), a parser and an evaluator.  
+The lexer scans the input and returns lexical tokens,
+the parser parses the tokens and returns an Abstract Syntax Tree,
+and the evaluator recursively evaluates the final value of the tree.
 
-To check out the demo (not fun, trust me) just click on the GitHub Page under repo description. :D
+To check out the calculator (not fun, trust me), just click on the GitHub Page under the repo description :D
