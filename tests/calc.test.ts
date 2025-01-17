@@ -29,6 +29,7 @@ describe("Testing calculate()", () => {
 		expect(calculate("5 / 0")).toBe(Infinity);
 		expect(calculate("0 ^ 5")).toBe(0);
 		expect(calculate("1 ^ 100")).toBe(1);
+		expect(calculate("-1 ^ 0.5")).toBe(NaN);
 	});
 
 	test("Bracket Usage", () => {
@@ -37,7 +38,8 @@ describe("Testing calculate()", () => {
 	});
 
 	test("Scientific Notation", () => {
-		expect(calculate("1e3 + 2e2")).toBe(1200);
+		expect(calculate("1e3 + 2e+2")).toBe(1200);
+		expect(calculate("2e-1 - 2.2e3")).toBe(-2199.8);
 	});
 
 	test("Decimal Numbers", () => {

@@ -28,7 +28,6 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 	let index = 0;
 	while (index < LexTokens.length) {
 		const _token = LexTokens[index];
-
 		switch (_token.type) {
 			case TokenTypes.Bracket: {
 				const rightIndex = balanceBracket(LexTokens, index);
@@ -36,9 +35,9 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 				index = rightIndex;
 
 				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					const tree =
-						index + 1 === LexTokens.length ? bracketTree : <AST<BinaryAST>>wrapAST({ left: bracketTree });
-					pointer.content = tree.content;
+					pointer.content = (
+						index + 1 === LexTokens.length ? bracketTree : <AST<BinaryAST>>wrapAST({ left: bracketTree })
+					).content;
 					break;
 				}
 				if ((<UnaryAST | BinaryAST>pointer.content).operator!.type === TokenTypes.UnaryOperator) {
@@ -97,10 +96,9 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 
 				const numTree: AST<NumeralAST> = wrapAST({ num: token });
 				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					const tree = wrapAST({
+					pointer.content = wrapAST({
 						left: numTree,
-					});
-					pointer.content = tree.content;
+					}).content;
 					break;
 				}
 				if ((<{ operator: OperatorToken }>pointer.content).operator.type === TokenTypes.UnaryOperator) {
@@ -111,10 +109,8 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 				break;
 			}
 		}
-
 		index++;
 	}
-
 	return root;
 }
 
