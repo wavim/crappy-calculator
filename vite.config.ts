@@ -5,9 +5,6 @@ export default defineConfig({
 		port: 3000,
 	},
 	build: {
-		rollupOptions: {
-			input: "src/index.html",
-		},
 		emptyOutDir: true,
 		outDir: "docs",
 		target: "esnext",
@@ -21,4 +18,5 @@ export default defineConfig({
 			},
 		},
 	},
+	base: "",
 });
