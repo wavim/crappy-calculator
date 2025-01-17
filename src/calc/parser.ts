@@ -23,11 +23,12 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 		});
 	}
 
-	let root: AST<ASTTypes> = { content: {} };
+	const root: AST<ASTTypes> = { content: {} };
 	let pointer: AST<ASTTypes> = root;
 	let index = 0;
 	while (index < LexTokens.length) {
 		const _token = LexTokens[index];
+
 		switch (_token.type) {
 			case TokenTypes.Bracket: {
 				const rightIndex = balanceBracket(LexTokens, index);
@@ -35,10 +36,9 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 				index = rightIndex;
 
 				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					pointer.content =
-						index + 1 === LexTokens.length
-							? bracketTree.content
-							: <BinaryAST>wrapAST({ left: bracketTree }).content;
+					const tree =
+						index + 1 === LexTokens.length ? bracketTree : <AST<BinaryAST>>wrapAST({ left: bracketTree });
+					pointer.content = tree.content;
 					break;
 				}
 				if ((<UnaryAST | BinaryAST>pointer.content).operator!.type === TokenTypes.UnaryOperator) {
@@ -85,7 +85,6 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 				});
 				if (lowPrior || afterUnOp) {
 					pointer.content = binOpTree.content;
-					pointer = binOpTree;
 					break;
 				}
 				(<BinaryAST>pointer.content).right = binOpTree;
@@ -98,9 +97,10 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 
 				const numTree: AST<NumeralAST> = wrapAST({ num: token });
 				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					pointer.content = wrapAST({
+					const tree = wrapAST({
 						left: numTree,
-					}).content;
+					});
+					pointer.content = tree.content;
 					break;
 				}
 				if ((<{ operator: OperatorToken }>pointer.content).operator.type === TokenTypes.UnaryOperator) {

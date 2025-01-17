@@ -18,6 +18,7 @@ describe("Testing calculate()", () => {
 
 	test("Negative Numbers", () => {
 		expect(Math.abs(calculate("-1 + 1"))).toBe(0);
+		expect(calculate("-1 - 1 + 1")).toBe(-1);
 		expect(calculate("-5 - 5")).toBe(-10);
 		expect(calculate("-2 * 3")).toBe(-6);
 		expect(calculate("-6 / 2")).toBe(-3);
