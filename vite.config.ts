@@ -1,15 +1,24 @@
 import { defineConfig } from "vite";
-import sassPlugin from "vite-plugin-sass";
 
 export default defineConfig({
-	plugins: [sassPlugin()],
 	server: {
-		port: 5200,
+		port: 3000,
 	},
 	build: {
+		rollupOptions: {
+			input: "src/index.html",
+		},
 		emptyOutDir: true,
+		outDir: "docs",
 		target: "esnext",
 		minify: true,
 		cssMinify: true,
+	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: "modern-compiler",
+			},
+		},
 	},
 });

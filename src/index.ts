@@ -1,18 +1,18 @@
 import "./index.scss";
 
-import { calc } from "./calc";
+import { calculate } from "./calc/calc";
 
 const input = <HTMLInputElement>document.getElementById("calc");
 const res = <HTMLParagraphElement>document.getElementById("res");
 
-res.textContent = String(calc(input.getAttribute("placeholder")));
+res.textContent = String(calculate(input.getAttribute("placeholder")!));
 input.oninput = () => {
 	if (input.value.length === 0) {
-		res.textContent = String(calc(input.getAttribute("placeholder")));
+		res.textContent = String(calculate(input.getAttribute("placeholder")!));
 		return;
 	}
 	try {
-		res.textContent = String(calc(input.value));
+		res.textContent = String(calculate(input.value));
 	} catch {
 		res.textContent = "Invalid Input";
 	}

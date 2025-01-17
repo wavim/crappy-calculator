@@ -5,10 +5,14 @@
 		"moduleResolution": "bundler",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
-		"types": ["vite/client"],
+		"types": ["vite/client", "jest"],
 		"sourceMap": true,
 		"noEmit": true,
 		"isolatedModules": true,
-		"noFallthroughCasesInSwitch": true
-	}
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
+	},
+	"include": ["src/**/*", "tests"]
 }

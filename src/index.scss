@@ -6,11 +6,22 @@ $border-radius: 1rem;
 $shadow: rgba(124, 127, 147, 0.3);
 $default-ease: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
+@mixin ls {
+	@media only screen and (min-width: 800px) {
+		@content;
+	}
+}
+
 @mixin text {
-	font-size: 2.5rem;
+	font-size: 1rem;
+	letter-spacing: 0.05rem;
 	font-family: "Courier New", Courier, monospace;
 	color: $text-primary;
-	letter-spacing: 0.2rem;
+
+	@include ls {
+		font-size: 2.5rem;
+		letter-spacing: 0.2rem;
+	}
 }
 
 div#root {
@@ -23,13 +34,10 @@ div#root {
 	align-items: center;
 	height: 95vh;
 
-	input#calc {
+	& input#calc {
 		all: initial;
 
-		@include text;
-
 		transform-origin: center center;
-		overflow-x: scroll;
 		width: 70%;
 		height: 20%;
 		text-align: center;
@@ -47,13 +55,17 @@ div#root {
 		&::placeholder {
 			color: $text-secondary;
 		}
-	}
-
-	p#res {
-		all: initial;
 
 		@include text;
+	}
 
-		margin-top: 4rem;
+	& p#res {
+		all: initial;
+		margin-top: 1.5rem;
+
+		@include text;
+		@include ls {
+			margin-top: 4rem;
+		}
 	}
 }
