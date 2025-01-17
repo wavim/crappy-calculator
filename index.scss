@@ -1,0 +1,59 @@
+$bg-primary: #eff1f5;
+$bg-secondary: #f4f7ff;
+$text-primary: #4c4f69;
+$text-secondary: #8c8fa1;
+$border-radius: 1rem;
+$shadow: rgba(124, 127, 147, 0.3);
+$default-ease: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+@mixin text {
+	font-size: 2.5rem;
+	font-family: "Courier New", Courier, monospace;
+	color: $text-primary;
+	letter-spacing: 0.2rem;
+}
+
+div#root {
+	all: initial;
+	display: flex;
+	box-sizing: border-box;
+	overflow: hidden;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 95vh;
+
+	input#calc {
+		all: initial;
+
+		@include text;
+
+		transform-origin: center center;
+		overflow-x: scroll;
+		width: 70%;
+		height: 20%;
+		text-align: center;
+		background-color: $bg-secondary;
+		border-radius: $border-radius;
+		transition: box-shadow $default-ease, transform $default-ease;
+
+		&:hover:not(:focus) {
+			box-shadow: 0 0 5rem 2rem $shadow;
+			transform: scale(1.1);
+		}
+		&:focus {
+			box-shadow: 0 0 40px $shadow;
+		}
+		&::placeholder {
+			color: $text-secondary;
+		}
+	}
+
+	p#res {
+		all: initial;
+
+		@include text;
+
+		margin-top: 4rem;
+	}
+}
