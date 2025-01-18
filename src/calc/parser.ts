@@ -14,6 +14,9 @@ import {
 	OperatorToken,
 } from "./types";
 
+/**
+ * @returns Abstract Syntax Tree (wrapped to mimic ptrs in js) after parsing the lexical tokens
+ */
 export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 	if (LexTokens.length === 1) {
 		const token = LexTokens[0];
@@ -114,6 +117,9 @@ export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
 	return root;
 }
 
+/**
+ * @returns index of the matching right bracket for left bracket at `leftIndex` in `lexTokens`
+ */
 function balanceBracket(lexTokens: Token<TokenTypes>[], leftIndex: number): number {
 	let rightIndex = leftIndex;
 	let level = 1;
@@ -129,6 +135,9 @@ function balanceBracket(lexTokens: Token<TokenTypes>[], leftIndex: number): numb
 	return rightIndex;
 }
 
+/**
+ * @returns wrapped AST, used to mimic ptr behavior in js
+ */
 function wrapAST<T extends ASTTypes>(content: T): AST<T> {
 	return {
 		content,

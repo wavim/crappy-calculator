@@ -1,5 +1,9 @@
 import { BinaryOperatorValues, BracketValues, Token, TokenTypes, TokenTypesCnt, UnaryOperatorValues } from "./types";
 
+/**
+ * @param input raw input string
+ * @returns lexical tokens of {@link TokenTypes}
+ */
 export function tokenize(input: string): Token<TokenTypes>[] {
 	const length = input.length;
 
@@ -22,6 +26,10 @@ const TokenTypesRE = {
 	[TokenTypes.Numeral]: /\d+(?:\.\d+)?(?:[eE](?:[\+\-])?\d+)?/,
 };
 
+/**
+ * Intake input string and push tokens into `tokens`, with position index information
+ * @returns raw match string digested
+ */
 function digest(input: string, tokens: Token<TokenTypes>[], index: number): string | undefined {
 	let match: string | undefined;
 	for (let i = 0; i < TokenTypesCnt; i++) {

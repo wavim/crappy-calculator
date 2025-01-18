@@ -2,6 +2,9 @@ import { tokenize } from "./tokenizer";
 import { parse } from "./parser";
 import { evaluate } from "./evaluator";
 
-export function calculate(input: string) {
+/**
+ * Main calculation entry
+ */
+export function calculate(input: string): number {
 	return evaluate(parse(tokenize(input)));
 }

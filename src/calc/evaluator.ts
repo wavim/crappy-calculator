@@ -10,6 +10,9 @@ import {
 	UnaryOperatorValues,
 } from "./types";
 
+/**
+ * @returns final expression value of AST with recursion
+ */
 export function evaluate(AbstractSyntaxTree: AST<ASTTypes>): number {
 	if ((<
 			{
