@@ -32,9 +32,18 @@ function digest(input: string, tokens: Token<TokenTypes>[], index: number): stri
 		const literal = match.trim();
 		switch (i) {
 			case TokenTypes.Bracket: {
+				const bracketValue = literal === "(" ? BracketValues.Left : BracketValues.Right;
+				const last = tokens.at(-1);
+				if (last?.type === TokenTypes.Numeral && bracketValue === BracketValues.Left) {
+					tokens.push({
+						type: TokenTypes.BinaryOperator,
+						value: BinaryOperatorValues.Mul,
+						index,
+					});
+				}
 				tokens.push({
 					type: TokenTypes.Bracket,
-					value: literal === "(" ? BracketValues.Left : BracketValues.Right,
+					value: bracketValue,
 					index,
 				});
 				break;

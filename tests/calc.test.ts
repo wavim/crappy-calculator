@@ -35,6 +35,7 @@ describe("Testing calculate()", () => {
 	test("Bracket Usage", () => {
 		expect(calculate("((2 + 3) * (4 - 1))")).toBe(15);
 		expect(calculate("((1 + 2) * (3 + 4)) / 2")).toBe(10.5);
+		expect(calculate("-2(1 + 3)")).toBe(-8);
 	});
 
 	test("Scientific Notation", () => {
