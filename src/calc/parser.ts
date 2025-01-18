@@ -15,6 +15,7 @@ import {
 } from "./types";
 
 /**
+ * @param LexTokens lexical tokens from tokenize()
  * @returns Abstract Syntax Tree (wrapped to mimic ptrs in js) after parsing the lexical tokens
  */
 export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {

@@ -11,6 +11,7 @@ import {
 } from "./types";
 
 /**
+ * @param AbstractSyntaxTree AST from parse()
  * @returns final expression value of AST with recursion
  */
 export function evaluate(AbstractSyntaxTree: AST<ASTTypes>): number {
