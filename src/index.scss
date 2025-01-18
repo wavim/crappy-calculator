@@ -39,7 +39,7 @@ div#root {
 
 		transform-origin: center center;
 		width: 70%;
-		height: 20%;
+		height: 10%;
 		text-align: center;
 		background-color: $bg-secondary;
 		border-radius: $border-radius;
@@ -57,6 +57,9 @@ div#root {
 		}
 
 		@include text;
+		@include ls {
+			height: 20%;
+		}
 	}
 
 	& p#res {
