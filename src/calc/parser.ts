@@ -1,114 +1,142 @@
 import {
 	AST,
+	ASTKinds,
+	ASTValues,
 	BinaryAST,
-	NumeralAST,
-	ASTTypes,
-	UnaryAST,
 	BinaryOperatorToken,
 	BinaryOperatorValues,
 	BracketValues,
 	NumeralToken,
 	Token,
 	TokenTypes,
+	UnaryAST,
 	UnaryOperatorToken,
-	OperatorToken,
+	UnsetAST,
 } from "./types";
 
 /**
- * @param LexTokens lexical tokens from tokenize()
+ * @param lexTokens lexical tokens from tokenize()
  * @returns Abstract Syntax Tree (wrapped to mimic ptrs in js) after parsing the lexical tokens
  */
-export function parse(LexTokens: Token<TokenTypes>[]): AST<ASTTypes> {
-	if (LexTokens.length === 1) {
-		const token = LexTokens[0];
-		if (token.type !== TokenTypes.Numeral) throw new SyntaxError(`Invalid orphan token at index ${token.index}.`);
-		return wrapAST({
-			num: <NumeralToken>token,
+export function parse(lexTokens: Token<TokenTypes>[]): AST<ASTKinds> {
+	if (lexTokens.length === 1) {
+		const token = lexTokens[0];
+		if (token.type !== TokenTypes.Numeral) throw new SyntaxError(`Invalid single token.`);
+		return wrapAST(ASTKinds.Numeral, {
+			numeral: <NumeralToken>token,
 		});
 	}
 
-	const root: AST<ASTTypes> = { content: {} };
-	let pointer: AST<ASTTypes> = root;
+	const root: UnsetAST = { kind: ASTKinds.Unset, content: {} };
+	let pointer: UnsetAST = root;
+
 	let index = 0;
-	while (index < LexTokens.length) {
-		const _token = LexTokens[index];
+	while (index < lexTokens.length) {
+		const _token = lexTokens[index];
+
 		switch (_token.type) {
 			case TokenTypes.Bracket: {
-				const rightIndex = balanceBracket(LexTokens, index);
-				const bracketTree = parse(LexTokens.slice(index + 1, rightIndex));
+				const rightIndex = balanceBracket(lexTokens, index);
+				const bracketTree = parse(lexTokens.slice(index + 1, rightIndex));
 				index = rightIndex;
 
-				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					pointer.content = (
-						index + 1 === LexTokens.length ? bracketTree : <AST<BinaryAST>>wrapAST({ left: bracketTree })
-					).content;
-					break;
+				switch (pointer.kind) {
+					case ASTKinds.Unset: {
+						const spansExpression = index === lexTokens.length - 1;
+						pointer.kind = ASTKinds.Binary;
+						pointer.content = (
+							spansExpression ? bracketTree : wrapAST(ASTKinds.Binary, { left: bracketTree })
+						).content;
+						break;
+					}
+
+					case ASTKinds.Unary: {
+						(<UnaryAST>pointer).content.argument = bracketTree;
+						break;
+					}
+
+					case ASTKinds.Binary: {
+						(<BinaryAST>pointer).content.right = bracketTree;
+						break;
+					}
 				}
-				if ((<UnaryAST | BinaryAST>pointer.content).operator!.type === TokenTypes.UnaryOperator) {
-					(<UnaryAST>pointer.content).arg = bracketTree;
-					break;
-				}
-				(<BinaryAST>pointer.content).right = bracketTree;
 				break;
 			}
 
 			case TokenTypes.UnaryOperator: {
-				const token = <UnaryOperatorToken>_token;
+				const unaryTree = wrapAST(ASTKinds.Unary, { operator: <UnaryOperatorToken>_token });
 
-				const unOpTree: AST<UnaryAST> = wrapAST({ operator: token });
-				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					pointer.content = unOpTree.content;
-					break;
+				switch (pointer.kind) {
+					case ASTKinds.Unset: {
+						pointer.kind = ASTKinds.Unary;
+						pointer.content = unaryTree.content;
+						break;
+					}
+
+					case ASTKinds.Unary: {
+						(<UnaryAST>pointer).content.argument = unaryTree;
+						pointer = unaryTree;
+						break;
+					}
+
+					case ASTKinds.Binary: {
+						(<BinaryAST>pointer).content.right = unaryTree;
+						pointer = unaryTree;
+						break;
+					}
 				}
-				if ((<{ operator: OperatorToken }>pointer.content).operator.type === TokenTypes.UnaryOperator) {
-					(<UnaryAST>pointer.content).arg = unOpTree;
-				} else {
-					(<BinaryAST>pointer.content).right = unOpTree;
-				}
-				pointer = unOpTree;
 				break;
 			}
 
 			case TokenTypes.BinaryOperator: {
 				const token = <BinaryOperatorToken>_token;
 
-				if (
-					(<{ left: AST<ASTTypes> }>pointer.content).left &&
-					!(<{ operator: OperatorToken }>pointer.content).operator
-				) {
-					(<BinaryAST>pointer.content).operator = token;
+				if (pointer.kind === ASTKinds.Binary && !(<BinaryAST>pointer).content.operator) {
+					(<BinaryAST>pointer).content.operator = token;
 					break;
 				}
-				const lowPrior = token.value === BinaryOperatorValues.Add || token.value === BinaryOperatorValues.Sub;
-				const afterUnOp =
-					(<{ operator: OperatorToken }>pointer.content).operator.type === TokenTypes.UnaryOperator;
-				const binOpTree: AST<BinaryAST> = wrapAST({
-					left: structuredClone(lowPrior || afterUnOp ? pointer : (<BinaryAST>pointer.content).right),
+
+				const isLowPrecedence =
+					token.value === BinaryOperatorValues.Add || token.value === BinaryOperatorValues.Sub;
+				const isUnderUnaryTree = pointer.kind === ASTKinds.Unary;
+
+				const binaryTree = wrapAST(ASTKinds.Binary, {
+					left: structuredClone(isLowPrecedence || isUnderUnaryTree ? pointer : pointer.content.right),
 					operator: token,
 				});
-				if (lowPrior || afterUnOp) {
-					pointer.content = binOpTree.content;
+
+				if (isLowPrecedence || isUnderUnaryTree) {
+					pointer.kind = ASTKinds.Binary;
+					pointer.content = binaryTree.content;
 					break;
 				}
-				(<BinaryAST>pointer.content).right = binOpTree;
-				pointer = binOpTree;
+
+				(<BinaryAST>pointer).content.right = binaryTree;
+				pointer = binaryTree;
 				break;
 			}
 
 			case TokenTypes.Numeral: {
-				const token = <NumeralToken>_token;
+				const numeralTree = wrapAST(ASTKinds.Numeral, { numeral: <NumeralToken>_token });
 
-				const numTree: AST<NumeralAST> = wrapAST({ num: token });
-				if (!(<{ operator?: OperatorToken }>pointer.content).operator) {
-					pointer.content = wrapAST({
-						left: numTree,
-					}).content;
-					break;
-				}
-				if ((<{ operator: OperatorToken }>pointer.content).operator.type === TokenTypes.UnaryOperator) {
-					(<UnaryAST>pointer.content).arg = numTree;
-				} else {
-					(<BinaryAST>pointer.content).right = numTree;
+				switch (pointer.kind) {
+					case ASTKinds.Unset: {
+						pointer.kind = ASTKinds.Binary;
+						pointer.content = wrapAST(ASTKinds.Binary, {
+							left: numeralTree,
+						}).content;
+						break;
+					}
+
+					case ASTKinds.Unary: {
+						(<UnaryAST>pointer).content.argument = numeralTree;
+						break;
+					}
+
+					case ASTKinds.Binary: {
+						(<BinaryAST>pointer).content.right = numeralTree;
+						break;
+					}
 				}
 				break;
 			}
@@ -139,8 +167,9 @@ function balanceBracket(lexTokens: Token<TokenTypes>[], leftIndex: number): numb
 /**
  * @returns wrapped AST, used to mimic ptr behavior in js
  */
-function wrapAST<T extends ASTTypes>(content: T): AST<T> {
+function wrapAST<T extends ASTKinds>(kind: T extends ASTKinds.Unset ? any : T, content: ASTValues<T>): AST<T> {
 	return {
+		kind,
 		content,
 	};
 }

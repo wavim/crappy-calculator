@@ -13,7 +13,6 @@ export enum TokenTypes {
 	Numeral,
 }
 export type BracketToken = Token<TokenTypes.Bracket>;
-export type OperatorToken = UnaryOperatorToken | BinaryOperatorToken;
 export type UnaryOperatorToken = Token<TokenTypes.UnaryOperator>;
 export type BinaryOperatorToken = Token<TokenTypes.BinaryOperator>;
 export type NumeralToken = Token<TokenTypes.Numeral>;
@@ -44,22 +43,39 @@ type TokenValues<T extends TokenTypes> = T extends TokenTypes.Bracket
 //#endregion TOKEN
 
 //#region AST
-export type AST<T extends ASTTypes | {}> = {
-	//wrapper property to make changing pointer functional
-	content: T;
+export type AST<T extends ASTKinds> = {
+	//wrapper property to make pointer functional
+	kind: T extends ASTKinds.Unset ? any : T;
+	content: ASTValues<T>;
 };
 
-export type ASTTypes = NumeralAST | UnaryAST | BinaryAST;
-export type NumeralAST = {
-	num: NumeralToken;
-};
-export type UnaryAST = {
-	operator?: UnaryOperatorToken;
-	arg?: AST<ASTTypes>;
-};
-export type BinaryAST = {
-	left?: AST<ASTTypes>;
-	operator?: BinaryOperatorToken;
-	right?: AST<ASTTypes>;
-};
+export enum ASTKinds {
+	Unset,
+	Numeral,
+	Unary,
+	Binary,
+}
+export type UnsetAST = AST<ASTKinds.Unset>;
+export type NumeralAST = AST<ASTKinds.Numeral>;
+export type UnaryAST = AST<ASTKinds.Unary>;
+export type BinaryAST = AST<ASTKinds.Binary>;
+
+export type ASTValues<K extends ASTKinds> = K extends ASTKinds.Unset
+	? {
+			[key: string]: any;
+	  }
+	: K extends ASTKinds.Numeral
+	? {
+			numeral: NumeralToken;
+	  }
+	: K extends ASTKinds.Unary
+	? {
+			operator: UnaryOperatorToken;
+			argument?: AST<ASTKinds>;
+	  }
+	: {
+			left: AST<ASTKinds>;
+			operator?: BinaryOperatorToken;
+			right?: AST<ASTKinds>;
+	  };
 //#endregion AST
