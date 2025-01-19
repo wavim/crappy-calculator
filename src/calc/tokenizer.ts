@@ -42,7 +42,11 @@ function digest(input: string, tokens: Token<TokenTypes>[], index: number): stri
 			case TokenTypes.Bracket: {
 				const bracketValue = literal === "(" ? BracketValues.Left : BracketValues.Right;
 				const last = tokens.at(-1);
-				if (last?.type === TokenTypes.Numeral && bracketValue === BracketValues.Left) {
+				if (
+					(last?.type === TokenTypes.Numeral ||
+						(last?.type === TokenTypes.Bracket && last.value === BracketValues.Right)) &&
+					bracketValue === BracketValues.Left
+				) {
 					tokens.push({
 						type: TokenTypes.BinaryOperator,
 						value: BinaryOperatorValues.Mul,

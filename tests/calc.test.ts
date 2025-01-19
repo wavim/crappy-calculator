@@ -38,6 +38,7 @@ describe("Testing calculate()", () => {
 		expect(calculate("((2 + 3) * (4 - 1))")).toBe(15);
 		expect(calculate("((1 + 2) * (3 + 4)) / 2")).toBe(10.5);
 		expect(calculate("-2(1 + 3)")).toBe(-8);
+		expect(calculate("3(2 * 4)(1 + 3)")).toBe(96);
 	});
 
 	test("Scientific Notation", () => {
