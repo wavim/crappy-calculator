@@ -43,10 +43,13 @@ export function parse(lexTokens: Token<TokenTypes>[]): AST<ASTKinds> {
 				switch (pointer.kind) {
 					case ASTKinds.Unset: {
 						const spansExpression = index === lexTokens.length - 1;
+						if (spansExpression) {
+							pointer.kind = bracketTree.kind;
+							pointer.content = bracketTree.content;
+							break;
+						}
 						pointer.kind = ASTKinds.Binary;
-						pointer.content = (
-							spansExpression ? bracketTree : wrapAST(ASTKinds.Binary, { left: bracketTree })
-						).content;
+						pointer.content = wrapAST(ASTKinds.Binary, { left: bracketTree }).content;
 						break;
 					}
 
@@ -143,6 +146,7 @@ export function parse(lexTokens: Token<TokenTypes>[]): AST<ASTKinds> {
 		}
 		index++;
 	}
+
 	return root;
 }
 
