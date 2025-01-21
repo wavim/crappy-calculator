@@ -43,7 +43,7 @@ export function evaluate(ast: AST<ASTKinds>): number {
 		}
 
 		default: {
-			return NaN;
+			throw new SyntaxError(`AST not defined: ${JSON.stringify(ast)}`);
 		}
 	}
 }

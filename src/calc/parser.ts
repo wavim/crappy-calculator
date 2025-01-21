@@ -92,6 +92,8 @@ export function parse(lexTokens: Token<TokenTypes>[]): AST<ASTKinds> {
 			}
 
 			case TokenTypes.BinaryOperator: {
+				if (pointer.kind === ASTKinds.Unset) throw new SyntaxError(`Binary operator at start of expression.`);
+
 				const token = <BinaryOperatorToken>_token;
 
 				if (pointer.kind === ASTKinds.Binary && !(<BinaryAST>pointer).content.operator) {

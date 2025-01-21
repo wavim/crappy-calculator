@@ -53,4 +53,15 @@ describe("Testing calculate()", () => {
 	test("Complex Expression with All Operations", () => {
 		expect(calculate("((1 + 2) * 3 - 4) / (2 ^ 2)")).toBe(1.25);
 	});
+
+	test("Syntax Errors", () => {
+		expect(() => calculate("")).toThrow();
+		expect(() => calculate("()")).toThrow();
+		expect(() => calculate("(")).toThrow();
+		expect(() => calculate(")")).toThrow();
+		expect(() => calculate("*")).toThrow();
+		expect(() => calculate("2**1")).toThrow();
+		expect(() => calculate("1 + a1")).toThrow();
+		expect(() => calculate("//")).toThrow();
+	});
 });
