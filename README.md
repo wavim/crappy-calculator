@@ -5,8 +5,7 @@ The lexer scans the input and returns lexical tokens (with slight modifications 
 after which the parser parses the tokens and returns an Abstract Syntax Tree.
 Finally, the evaluator recursively evaluates the final value of the tree.
 
-> Sometimes the calculator gives results like 13.00000001,
-> that is due to JS floating point arithmetic precision issues.
-> (Basically, not my fault!)
+> The calculator relies on JS floating point numerical calculations,
+> and is thus prone to all precision errors in JS.
 
 To check out the calculator, just click on the GitHub Page under the repo description :D
