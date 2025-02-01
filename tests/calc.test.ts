@@ -14,6 +14,8 @@ describe("Testing calculate()", () => {
 		expect(calculate("(1 + 2) * 3")).toBe(9);
 		expect(calculate("10 - 2 / 2")).toBe(9);
 		expect(calculate("2 + 3 * (4 - 1) ^ 2")).toBe(29);
+		expect(calculate("1 + 2 ^ 3 * 4")).toBe(33);
+		expect(calculate("1 + 2 ^ (3 * 4)")).toBe(4097);
 	});
 
 	test("Negative Numbers", () => {

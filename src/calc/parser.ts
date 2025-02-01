@@ -14,6 +14,14 @@ import {
 	UnsetAST,
 } from "./types";
 
+const BINARY_OP_PRECEDENCE = {
+	[BinaryOperatorValues.Add]: 0,
+	[BinaryOperatorValues.Sub]: 0,
+	[BinaryOperatorValues.Mul]: 1,
+	[BinaryOperatorValues.Div]: 1,
+	[BinaryOperatorValues.Pow]: 2,
+};
+
 /**
  * @param lexTokens lexical tokens from tokenize()
  * @returns Abstract Syntax Tree (wrapped to mimic ptrs in js) after parsing the lexical tokens
@@ -102,15 +110,16 @@ export function parse(lexTokens: Token<TokenTypes>[]): AST<ASTKinds> {
 				}
 
 				const isLowPrecedence =
-					token.value === BinaryOperatorValues.Add || token.value === BinaryOperatorValues.Sub;
-				const isUnderUnaryTree = pointer.kind === ASTKinds.Unary;
+					pointer.kind === ASTKinds.Unary ||
+					BINARY_OP_PRECEDENCE[token.value] <=
+						BINARY_OP_PRECEDENCE[(<BinaryAST>pointer).content.operator!.value];
 
 				const binaryTree = wrapAST(ASTKinds.Binary, {
-					left: structuredClone(isLowPrecedence || isUnderUnaryTree ? pointer : pointer.content.right),
+					left: structuredClone(isLowPrecedence ? pointer : pointer.content.right),
 					operator: token,
 				});
 
-				if (isLowPrecedence || isUnderUnaryTree) {
+				if (isLowPrecedence) {
 					pointer.kind = ASTKinds.Binary;
 					pointer.content = binaryTree.content;
 					break;
