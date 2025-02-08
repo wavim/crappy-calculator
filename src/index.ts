@@ -6,7 +6,7 @@ import { Parser } from "./calculator/main/parser";
 import { Evaluator } from "./calculator/main/evaluator";
 import { Calculator } from "./calculator/calculator";
 
-const TOKEN_RENDER_CNT_LIMIT = 100;
+const RENDER_LENGTH_LIMIT = 50;
 
 const inputElement = <HTMLInputElement>document.getElementById("input");
 const resultElement = <HTMLDivElement>document.getElementById("result");
@@ -40,7 +40,12 @@ function updateResult(input: string): void {
 function renderResult(tokens: Tokenizer.Token[], value: number): void {
 	resultElement.innerHTML = "";
 
-	if (tokens.length > TOKEN_RENDER_CNT_LIMIT) {
+	const sum = (array: number[]) => {
+		let sum = 0;
+		for (const element of array) sum += element;
+		return sum;
+	};
+	if (sum(tokens.map((token) => token.symbol.length)) > RENDER_LENGTH_LIMIT) {
 		const expressionElement = document.createElement("p");
 		expressionElement.textContent = "Expression";
 		resultElement.appendChild(expressionElement);
