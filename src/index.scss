@@ -6,8 +6,13 @@ $border-radius: 1rem;
 $shadow: rgba(124, 127, 147, 0.3);
 $default-ease: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
-@mixin ls {
-	@media only screen and (min-width: 800px) {
+$token-bracket: #64a7ea;
+$token-numeral: #169116;
+$token-unaryop: #958409;
+$token-binaryop: #de66de;
+
+@mixin responsive {
+	@media only screen and (min-width: 900px) {
 		@content;
 	}
 }
@@ -18,7 +23,7 @@ $default-ease: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 	font-family: "Courier New", Courier, monospace;
 	color: $text-primary;
 
-	@include ls {
+	@include responsive {
 		font-size: 2.5rem;
 		letter-spacing: 0.2rem;
 	}
@@ -34,41 +39,69 @@ div#root {
 	align-items: center;
 	height: 95vh;
 
-	& input#calc {
+	& input#input {
 		all: initial;
 
 		transform-origin: center center;
 		width: 70%;
 		height: 10%;
+		overflow-x: auto;
 		text-align: center;
 		background-color: $bg-secondary;
 		border-radius: $border-radius;
 		transition: box-shadow $default-ease, transform $default-ease;
 
 		&:hover:not(:focus) {
-			box-shadow: 0 0 5rem 2rem $shadow;
-			transform: scale(1.1);
+			box-shadow: 0 0 3rem 1rem $shadow;
+			transform: scale(1.05);
 		}
 		&:focus {
-			box-shadow: 0 0 40px $shadow;
+			box-shadow: 0 0 2rem $shadow;
 		}
 		&::placeholder {
 			color: $text-secondary;
 		}
 
 		@include text;
-		@include ls {
+		@include responsive {
 			height: 20%;
 		}
 	}
 
-	& p#res {
-		all: initial;
-		margin-top: 1.5rem;
+	& div#result {
+		width: 90%;
+		margin-top: 5%;
+		overflow-x: auto;
+		text-align: center;
 
-		@include text;
-		@include ls {
-			margin-top: 4rem;
+		& p {
+			display: inline;
+			@include text;
 		}
+		& p.Bracket {
+			color: $token-bracket;
+		}
+		& p.Numeral {
+			color: $token-numeral;
+		}
+		& p.UnaryOp {
+			color: $token-unaryop;
+		}
+		& p.BinaryOp {
+			color: $token-binaryop;
+		}
+
+		&.error {
+			text-align: center;
+			width: 100rem;
+			transform: scale(0.7);
+		}
+	}
+
+	& p#notes {
+		text-align: center;
+		width: 100rem;
+		transform: scale(0.5);
+		@include text;
 	}
 }

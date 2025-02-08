@@ -10,9 +10,7 @@
 		"noEmit": true,
 		"isolatedModules": true,
 		"strict": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true
+		"noFallthroughCasesInSwitch": true
 	},
 	"include": ["src/**/*", "tests"]
 }
