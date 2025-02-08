@@ -1,3 +1,6 @@
+/**
+ * Math function implementations to back registry
+ */
 export namespace Functions {
 	const APPROX_FACTORIAL_THRESHOLD = 100;
 	export function factorial(x: number): number {

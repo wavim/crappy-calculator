@@ -2,7 +2,13 @@ import { Enums } from "../constants/enums";
 import { Registry } from "../registry/registry";
 import { Parser } from "./parser";
 
+/**
+ * Evaluate the final expression value of ASTs
+ */
 export namespace Evaluator {
+	/**
+	 * Main evaluation entry for ASTs
+	 */
 	export function evaluate(tree: Parser.TreeTypesType): number {
 		switch (tree.type) {
 			case Enums.TreeTypes.Root: {
@@ -19,8 +25,6 @@ export namespace Evaluator {
 			}
 		}
 	}
-
-	const position = (meta: { from: number; to: number }) => `${meta.from} - ${meta.to}`;
 
 	function handleRootTree(tree: Parser.RootTree): number {
 		if (!tree.content) throw new SyntaxError("Evaluating empty tree.");
@@ -53,4 +57,6 @@ export namespace Evaluator {
 		const right = evaluate(tree.right);
 		return callback(left, right);
 	}
+
+	const position = (meta: { from: number; to: number }) => `${meta.from} - ${meta.to}`;
 }

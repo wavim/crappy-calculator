@@ -2,7 +2,56 @@ import { Enums } from "../constants/enums";
 import { Registry } from "../registry/registry";
 import { Tokenizer } from "./tokenizer";
 
+/**
+ * Parse lexical tokens into Abstract Syntax Tree
+ */
 export namespace Parser {
+	/**
+	 * Main parsing entry for lexical tokens
+	 */
+	export function parse(tokens: Tokenizer.Token[]): RootTree {
+		const root = new RootTree();
+		const runtime: ParserRuntime = {
+			index: 0,
+			position: () => {
+				const token = runtime.tokens[runtime.index];
+				return `${token.meta.from} - ${token.meta.to}`;
+			},
+			tokens,
+			pointer: root,
+		};
+
+		while (runtime.index < tokens.length) {
+			const token = tokens[runtime.index];
+			switch (token.type) {
+				case Enums.TokenTypes.Bracket: {
+					handleBracket(token, runtime);
+					break;
+				}
+				case Enums.TokenTypes.Numeral: {
+					handleNumeral(token, runtime);
+					break;
+				}
+				case Enums.TokenTypes.UnaryOp: {
+					handleUnaryOp(token, runtime);
+					break;
+				}
+				case Enums.TokenTypes.BinaryOp: {
+					handleBinaryOp(token, runtime);
+					break;
+				}
+			}
+			runtime.index++;
+		}
+		return root;
+	}
+	type ParserRuntime = {
+		index: number;
+		tokens: Tokenizer.Token[];
+		pointer: TreeTypesType;
+		position: () => string;
+	};
+
 	export class Tree {
 		constructor(public type: Enums.TreeTypes, public precedence: number) {}
 		clone(): typeof this {
@@ -102,49 +151,6 @@ export namespace Parser {
 				this.left ? this.left.toString(level + 1) : "<Empty>"
 			}${indent}Right: ${this.right ? this.right.toString(level + 1) : "<Empty>"}`;
 		}
-	}
-
-	type ParserRuntime = {
-		index: number;
-		tokens: Tokenizer.Token[];
-		pointer: TreeTypesType;
-		position: () => string;
-	};
-	export function parse(tokens: Tokenizer.Token[]): RootTree {
-		const root = new RootTree();
-		const runtime: ParserRuntime = {
-			index: 0,
-			position: () => {
-				const token = runtime.tokens[runtime.index];
-				return `${token.meta.from} - ${token.meta.to}`;
-			},
-			tokens,
-			pointer: root,
-		};
-
-		while (runtime.index < tokens.length) {
-			const token = tokens[runtime.index];
-			switch (token.type) {
-				case Enums.TokenTypes.Bracket: {
-					handleBracket(token, runtime);
-					break;
-				}
-				case Enums.TokenTypes.Numeral: {
-					handleNumeral(token, runtime);
-					break;
-				}
-				case Enums.TokenTypes.UnaryOp: {
-					handleUnaryOp(token, runtime);
-					break;
-				}
-				case Enums.TokenTypes.BinaryOp: {
-					handleBinaryOp(token, runtime);
-					break;
-				}
-			}
-			runtime.index++;
-		}
-		return root;
 	}
 
 	function handleBracket(token: Tokenizer.Token, runtime: ParserRuntime): void {

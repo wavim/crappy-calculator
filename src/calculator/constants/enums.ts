@@ -1,3 +1,6 @@
+/**
+ * Enums for the calculator
+ */
 export namespace Enums {
 	export enum UnaryOpTypes {
 		Prefix,

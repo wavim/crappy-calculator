@@ -1,5 +1,8 @@
 import { Enums } from "../constants/enums";
 
+/**
+ * Manager for custom registered items
+ */
 export namespace Registry {
 	export type Constant = {
 		symbol: string;
@@ -44,6 +47,9 @@ export namespace Registry {
 		return binaryOpSymbolRegistry.has(symbol);
 	}
 
+	/**
+	 * Register a new constant e.g. E -> 2.718...
+	 */
 	export function registerConstant(id: string, constant: Constant): void {
 		if (existConstant(id)) throw new Error(`Constant with id ${id} already exists.`);
 		if (existConstantWithSymbol(constant.symbol)) {
@@ -52,6 +58,9 @@ export namespace Registry {
 		constantRegistry.set(id, constant);
 		constantSymbolRegistry.set(constant.symbol, constant);
 	}
+	/**
+	 * Register a new unary operator e.g. negation (-), abs
+	 */
 	export function registerUnaryOp(id: string, unaryOp: UnaryOp): void {
 		if (existUnaryOp(id)) throw new Error(`Unary operator with id ${id} already exists.`);
 		if (existUnaryOpWithSymbol(unaryOp.symbol)) {
@@ -60,6 +69,9 @@ export namespace Registry {
 		unaryOpRegistry.set(id, unaryOp);
 		unaryOpSymbolRegistry.set(unaryOp.symbol, unaryOp);
 	}
+	/**
+	 * Register a new binary operator e.g. *, nPr
+	 */
 	export function registerBinaryOp(id: string, binaryOp: BinaryOp): void {
 		if (existBinaryOp(id)) throw new Error(`Binary operator with id ${id} already exists.`);
 		if (existBinaryOpWithSymbol(binaryOp.symbol)) {

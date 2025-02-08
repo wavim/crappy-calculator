@@ -2,7 +2,24 @@ import { Enums } from "../constants/enums";
 import { Registry } from "../registry/registry";
 import { register } from "../registry/register";
 
+/**
+ * Tokenize raw input string into lexical tokens
+ */
 export namespace Tokenizer {
+	/**
+	 * Main tokenization entry for raw input strings
+	 */
+	export function tokenize(input: string): Token[] {
+		const length = input.length;
+		const tokens: Token[] = [];
+		while (input.length) {
+			const index = length - input.length;
+			const match = digest(input, index, tokens);
+			input = input.slice(match.length);
+		}
+		return tokens;
+	}
+
 	export class Token {
 		constructor(
 			public type: Enums.TokenTypes,
@@ -15,17 +32,6 @@ export namespace Tokenizer {
 				this.symbol
 			}`;
 		}
-	}
-
-	export function tokenize(input: string): Token[] {
-		const length = input.length;
-		const tokens: Token[] = [];
-		while (input.length) {
-			const index = length - input.length;
-			const match = digest(input, index, tokens);
-			input = input.slice(match.length);
-		}
-		return tokens;
 	}
 
 	register();

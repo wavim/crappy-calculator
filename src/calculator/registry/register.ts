@@ -2,6 +2,9 @@ import { Enums } from "../constants/enums";
 import { Registry } from "./registry";
 import { Functions } from "../maths/functions";
 
+/**
+ * Place to define custom constants, unary operators and binary operators
+ */
 export function register(): void {
 	//#region Constants
 	Registry.registerConstant("e", {
@@ -114,7 +117,7 @@ export function register(): void {
 	//#endregion
 
 	//#region Binary Functions
-	//MO NOTES this constant is needed since precedence is shared among binary operators & functions
+	//This constant is needed since precedence is shared among binary operators & functions
 	const BINARY_FUNCTION_PRECEDENCE_BASE = 100;
 	Registry.registerBinaryOp("min", {
 		symbol: "min",
