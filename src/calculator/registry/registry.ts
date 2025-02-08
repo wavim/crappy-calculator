@@ -4,18 +4,20 @@ import { Enums } from "../constants/enums";
  * Manager for custom registered items
  */
 export namespace Registry {
-	export type Constant = {
+	type Id = { id: string };
+
+	export type Constant = Id & {
 		symbol: string;
 		value: number;
 	};
 	export type UnaryOpCallback = (argument: number) => number;
-	export type UnaryOp = {
+	export type UnaryOp = Id & {
 		symbol: string;
 		type: Enums.UnaryOpTypes;
 		callback: UnaryOpCallback;
 	};
 	export type BinaryOpCallback = (left: number, right: number) => number;
-	export type BinaryOp = {
+	export type BinaryOp = Id & {
 		symbol: string;
 		callback: BinaryOpCallback;
 		precedence: number;
@@ -50,35 +52,35 @@ export namespace Registry {
 	/**
 	 * Register a new constant e.g. E -> 2.718...
 	 */
-	export function registerConstant(id: string, constant: Constant): void {
+	export function registerConstant(id: string, constant: Omit<Constant, "id">): void {
 		if (existConstant(id)) throw new Error(`Constant with id ${id} already exists.`);
 		if (existConstantWithSymbol(constant.symbol)) {
 			throw new Error(`Constant with symbol ${constant.symbol} already exists.`);
 		}
-		constantRegistry.set(id, constant);
-		constantSymbolRegistry.set(constant.symbol, constant);
+		constantRegistry.set(id, { id, ...constant });
+		constantSymbolRegistry.set(constant.symbol, { id, ...constant });
 	}
 	/**
 	 * Register a new unary operator e.g. negation (-), abs
 	 */
-	export function registerUnaryOp(id: string, unaryOp: UnaryOp): void {
+	export function registerUnaryOp(id: string, unaryOp: Omit<UnaryOp, "id">): void {
 		if (existUnaryOp(id)) throw new Error(`Unary operator with id ${id} already exists.`);
 		if (existUnaryOpWithSymbol(unaryOp.symbol)) {
 			throw new Error(`Unary operator with symbol ${unaryOp.symbol} already exists.`);
 		}
-		unaryOpRegistry.set(id, unaryOp);
-		unaryOpSymbolRegistry.set(unaryOp.symbol, unaryOp);
+		unaryOpRegistry.set(id, { id, ...unaryOp });
+		unaryOpSymbolRegistry.set(unaryOp.symbol, { id, ...unaryOp });
 	}
 	/**
 	 * Register a new binary operator e.g. *, nPr
 	 */
-	export function registerBinaryOp(id: string, binaryOp: BinaryOp): void {
+	export function registerBinaryOp(id: string, binaryOp: Omit<BinaryOp, "id">): void {
 		if (existBinaryOp(id)) throw new Error(`Binary operator with id ${id} already exists.`);
 		if (existBinaryOpWithSymbol(binaryOp.symbol)) {
 			throw new Error(`Binary operator with symbol ${binaryOp.symbol} already exists.`);
 		}
-		binaryOpRegistry.set(id, binaryOp);
-		binaryOpSymbolRegistry.set(binaryOp.symbol, binaryOp);
+		binaryOpRegistry.set(id, { id, ...binaryOp });
+		binaryOpSymbolRegistry.set(binaryOp.symbol, { id, ...binaryOp });
 	}
 
 	export function getConstantSymbols(): string[] {

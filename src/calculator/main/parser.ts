@@ -105,7 +105,7 @@ export namespace Parser {
 
 		operator: Registry.UnaryOp;
 		meta: { from: number; to: number };
-		constructor(public parent: Exclude<TreeTypesType, NumeralTree>, public operatorToken: Tokenizer.Token) {
+		constructor(public parent: Exclude<TreeTypesType, NumeralTree>, operatorToken: Tokenizer.Token) {
 			super(Enums.TreeTypes.UnaryOp, UNARYOP_PRECEDENCE);
 			this.operator = Registry.getUnaryOpWithSymbol(operatorToken.symbol);
 			this.meta = operatorToken.meta;
@@ -113,9 +113,9 @@ export namespace Parser {
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `Tree<Unary>${indent}Operator: ${this.operatorToken}${indent}Argument: ${
-				this.argument ? this.argument.toString(level + 1) : "<Empty>"
-			}`;
+			return `Tree<Unary>${indent}Operator: ${this.operator.id} (${
+				this.operator.symbol
+			})${indent}Argument: ${this.argument ? this.argument.toString(level + 1) : "<Empty>"}`;
 		}
 	}
 	export class BinaryOpTree extends Tree {
@@ -138,7 +138,7 @@ export namespace Parser {
 
 		operator: Registry.BinaryOp;
 		meta: { from: number; to: number };
-		constructor(public parent: Exclude<TreeTypesType, NumeralTree>, public operatorToken: Tokenizer.Token) {
+		constructor(public parent: Exclude<TreeTypesType, NumeralTree>, operatorToken: Tokenizer.Token) {
 			const operator = Registry.getBinaryOpWithSymbol(operatorToken.symbol);
 			super(Enums.TreeTypes.BinaryOp, operator.precedence);
 			this.operator = operator;
@@ -147,9 +147,11 @@ export namespace Parser {
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `Tree<Binary>${indent}Operator: ${this.operatorToken}${indent}Left: ${
-				this.left ? this.left.toString(level + 1) : "<Empty>"
-			}${indent}Right: ${this.right ? this.right.toString(level + 1) : "<Empty>"}`;
+			return `Tree<Binary>${indent}Operator: ${this.operator.id} (${
+				this.operator.symbol
+			})${indent}Left: ${this.left ? this.left.toString(level + 1) : "<Empty>"}${indent}Right: ${
+				this.right ? this.right.toString(level + 1) : "<Empty>"
+			}`;
 		}
 	}
 
