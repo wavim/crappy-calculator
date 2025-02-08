@@ -17,7 +17,7 @@ New constants, unary operators (functions) and binary operators (functions)
 can be defined in no time inside a registry, specifying some details for them
 (e.g. precedence for binary operators).
 
-> Check the files in src/calculator/registry, the code should be self-explanatory.
+> Check the files in src/calculator/registry/, the code should be self-explanatory.
 
 > Items symbols registered are CASE SENSITIVE.
 
