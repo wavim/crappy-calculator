@@ -1,10 +1,10 @@
 import "./index.scss";
 
-import { Enums } from "./calc/constants/enums";
-import { Tokenizer } from "./calc/main/tokenizer";
-import { Parser } from "./calc/main/parser";
-import { Evaluator } from "./calc/main/evaluator";
-import { Calculator } from "./calc/calculator";
+import { Enums } from "./calculator/constants/enums";
+import { Tokenizer } from "./calculator/main/tokenizer";
+import { Parser } from "./calculator/main/parser";
+import { Evaluator } from "./calculator/main/evaluator";
+import { Calculator } from "./calculator/calculator";
 
 const TOKEN_RENDER_CNT_LIMIT = 100;
 
