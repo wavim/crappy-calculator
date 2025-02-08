@@ -8,13 +8,14 @@
 	<body>
 		<div id="root">
 			<input
-				type="text"
-				id="calc"
-				placeholder="-2(1 + 2) * -3.1 / 4 ^ 5e-1"
-				autocomplete="off"
-				spellcheck="false"
+			id="input"
+			type="text"
+			placeholder="-Ln(E^2.5e1/exp(3!))+88"
+			autocomplete="off"
+			spellcheck="false"
 			/>
-			<p id="res"></p>
+			<div id="result"></div>
+			<p id="notes">Parsed AST can be inspected in the Debug Console</p>
 		</div>
 		<script src="src/index.ts" type="module"></script>
 	</body>
