@@ -40,7 +40,7 @@ export namespace Parser {
 		}
 
 		toString(level: number = 1): string {
-			const indent = "\n" + "\t".repeat(level);
+			const indent = "\n" + "  ┃  ".repeat(level);
 			return `Tree<Numeral>${indent}${this.numeral}`;
 		}
 	}
@@ -63,7 +63,7 @@ export namespace Parser {
 		}
 
 		toString(level: number = 1): string {
-			const indent = "\n" + "\t".repeat(level);
+			const indent = "\n" + "  ┃  ".repeat(level);
 			return `Tree<Unary>${indent}Operator: ${this.operatorToken}${indent}Argument: ${
 				this.argument ? this.argument.toString(level + 1) : "<Empty>"
 			}`;
@@ -97,7 +97,7 @@ export namespace Parser {
 		}
 
 		toString(level: number = 1): string {
-			const indent = "\n" + "\t".repeat(level);
+			const indent = "\n" + "  ┃  ".repeat(level);
 			return `Tree<Binary>${indent}Operator: ${this.operatorToken}${indent}Left: ${
 				this.left ? this.left.toString(level + 1) : "<Empty>"
 			}${indent}Right: ${this.right ? this.right.toString(level + 1) : "<Empty>"}`;
