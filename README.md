@@ -56,7 +56,7 @@ Below are the items registered in the master branch.
 - a \+ b (addition)
 - a \- b (subtract)
 - a \* b (multiplication)
-- a \ b (division)
+- a / b (division)
 - a ^ b (power)
 - a % b (modulo)
 
