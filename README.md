@@ -14,7 +14,8 @@ The calculator logic is implemented with a tokenizer (lexer), a LL parser and an
 
 Brackets in the calculator are always ( and ),
 with numerals essentially anything:  
-1, 2.3, 0.05, 7.4e10, 10E-8, 0.1e+2 etc.
+1, 2.3, 0.05, 7.4e10, 10E-8, 0.1e+2 etc.  
+All spaces would be ignored on tokenization (unless it breaks something apart e.g. cos → c os, of course!), add them if you like.
 
 New constants, unary operators (functions) and binary operators (functions)
 can be defined in no time inside a registry, specifying some details for them
