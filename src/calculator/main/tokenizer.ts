@@ -93,7 +93,7 @@ export namespace Tokenizer {
 			}
 			break;
 		}
-		if (!match) throw new SyntaxError(`Unknown symbol at index ${index}.`);
+		if (!match) throw new SyntaxError(`Unknown symbol at position ${index}.`);
 		return match;
 	}
 
