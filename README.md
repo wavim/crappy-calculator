@@ -9,7 +9,10 @@ The calculator logic is implemented with a tokenizer (lexer), a LL parser and an
 - The parser is responsible for constructing an Abstract Syntax Tree from the tokens.
 - The evaluator is responsible for recursively evaluating the final expression value of the tree.
 
-Brackets in the calculator is always ( and ),
+> The evaluator ultimately relies on JS,
+> and is thus prone to all precision errors in JS.
+
+Brackets in the calculator are always ( and ),
 with numerals essentially anything:  
 1, 2.3, 0.05, 7.4e10, 10E-8, 0.1e+2 etc.
 
@@ -22,9 +25,6 @@ can be defined in no time inside a registry, specifying some details for them
 > Items symbols registered are CASE SENSITIVE.
 
 To check out the calculator, click on the GitHub Page under the repository description :D
-
-> The evaluator ultimately relies on JS,
-> and is thus prone to all precision errors in JS.
 
 Below are the items registered in the master branch.
 
