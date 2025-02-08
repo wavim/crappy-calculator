@@ -4,6 +4,7 @@
 export namespace Functions {
 	const APPROX_FACTORIAL_THRESHOLD = 100;
 	export function factorial(x: number): number {
+		if (x === Infinity) return Infinity;
 		if (x >= 0 && x < APPROX_FACTORIAL_THRESHOLD && Number.isInteger(x)) {
 			let factorial = 1;
 			for (let n = 2; n < x + 1; n++) factorial *= n;
