@@ -21,6 +21,11 @@ New constants, unary operators (functions) and binary operators (functions)
 can be defined in no time inside a registry, specifying some details for them
 (e.g. precedence for binary operators).
 
+> Binary operators (functions) of the same precedence are left associative
+> e.g. 1-2+3 = ((1-2)+3).  
+> Unary operators (functions) are right associative
+> e.g. -4! = (-(4!)).
+
 > Check the files in src/calculator/registry/, the code should be self-explanatory.
 
 > Items symbols registered are CASE SENSITIVE.
