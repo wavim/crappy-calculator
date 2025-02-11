@@ -48,6 +48,9 @@ Below are the items registered in the master branch.
 #### Unary Functions
 
 - abs(x) (absolute value)
+- floor(x) (floor)
+- ceil(x) (ceil)
+- round(x) (round)
 - sqrt(x) (square root)
 - exp(x) (exponentiation base $e$)
 - Ln(x) (natural log)
@@ -63,7 +66,9 @@ Below are the items registered in the master branch.
 - a \- b (subtract)
 - a \* b (multiplication)
 - a / b (division)
-- a ^ b (power)
+- a // b (integer division)
+- a ** b (power)
+- a ^ b (power alias)
 - a % b (modulo)
 
 #### Binary Functions
@@ -79,6 +84,6 @@ Below are the items registered in the master branch.
 > but it is actually interpreted as (-1)^0.5.
 
 You can also define your own items, or mess around with the existing.
-(Switching + symbols with - is evilly fun lol)
+(Switching "+"s with "-"s is evilly fun lol)
 
 Remember to play with the demo!

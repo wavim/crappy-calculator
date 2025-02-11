@@ -30,6 +30,8 @@ describe("calculator test", () => {
 		run("LnE", 1);
 		run("Ln(E^3)", 3);
 		run("log100", 2);
+		run("round0.5", 1);
+		run("floor0.5", 0);
 	});
 	test("unary functions (mixed)", () => {
 		run("logabs-3", Math.log10(3));
@@ -43,6 +45,8 @@ describe("calculator test", () => {
 		run("2-3", -1);
 		run("2*3", 6);
 		run("2/3", 2 / 3);
+		run("3//2", 1);
+		run("2**3", 8);
 		run("2^3", 8);
 		run("2%3", 2);
 	});

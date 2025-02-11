@@ -41,6 +41,21 @@ export function register(): void {
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.abs,
 	});
+	Registry.registerUnaryOp("floor", {
+		symbol: "floor",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.floor,
+	});
+	Registry.registerUnaryOp("ceil", {
+		symbol: "ceil",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.ceil,
+	});
+	Registry.registerUnaryOp("round", {
+		symbol: "round",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.round,
+	});
 	Registry.registerUnaryOp("sqrt", {
 		symbol: "sqrt",
 		type: Enums.UnaryOpTypes.Function,
@@ -104,7 +119,17 @@ export function register(): void {
 		callback: (a, b) => a / b,
 		precedence: 1,
 	});
+	Registry.registerBinaryOp("int_div", {
+		symbol: "//",
+		callback: (a, b) => Math.floor(a / b),
+		precedence: 1,
+	});
 	Registry.registerBinaryOp("pow", {
+		symbol: "**",
+		callback: (a, b) => a ** b,
+		precedence: 2,
+	});
+	Registry.registerBinaryOp("pow_alias", {
 		symbol: "^",
 		callback: (a, b) => a ** b,
 		precedence: 2,
