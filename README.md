@@ -43,21 +43,29 @@ Below are the items registered in the master branch.
 
 - \+x (identity)
 - \-x (negation)
+
 - x! (factorial)
 
 #### Unary Functions
 
 - abs(x) (absolute value)
+
 - floor(x) (floor)
 - ceil(x) (ceil)
 - round(x) (round)
+
 - sqrt(x) (square root)
 - exp(x) (exponentiation base $e$)
 - Ln(x) (natural log)
 - log(x) (log base 10)
-- sin(x) (sine radians)
-- cos(x) (cosine radians)
-- tan(x) (tangent radians)
+
+- sin(x) (sin radians)
+- cos(x) (cos radians)
+- tan(x) (tan radians)
+- asin(x) (arcsin)
+- acos(x) (arccos)
+- atan(x) (arctan)
+
 - Gamma(x) (gamma function)
 
 #### Binary Operators
@@ -66,6 +74,7 @@ Below are the items registered in the master branch.
 - a \- b (subtract)
 - a \* b (multiplication)
 - a / b (division)
+
 - a // b (integer division)
 - a ** b (power)
 - a ^ b (power alias)
@@ -75,6 +84,7 @@ Below are the items registered in the master branch.
 
 - (a) min (b) (minimum)
 - (a) max (b) (maximum)
+
 - (n) P (r) (permutation)
 - (n) C (r) (combination)
 

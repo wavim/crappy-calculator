@@ -37,7 +37,7 @@ export function register(): void {
 
 	//#region Unary Functions
 	Registry.registerUnaryOp("abs", {
-		symbol: "abs",
+		symbol: "absolute",
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.abs,
 	});
@@ -90,6 +90,21 @@ export function register(): void {
 		symbol: "tan",
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.tan,
+	});
+	Registry.registerUnaryOp("asin", {
+		symbol: "asin",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.asin,
+	});
+	Registry.registerUnaryOp("acos", {
+		symbol: "acos",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.acos,
+	});
+	Registry.registerUnaryOp("atan", {
+		symbol: "atan",
+		type: Enums.UnaryOpTypes.Function,
+		callback: Math.atan,
 	});
 	Registry.registerUnaryOp("gamma", {
 		symbol: "Gamma",
