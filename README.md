@@ -74,8 +74,8 @@ Below are the items registered in the master branch.
 - a \- b (subtract)
 - a \* b (multiplication)
 - a / b (division)
-
 - a // b (integer division)
+
 - a ** b (power)
 - a ^ b (power alias)
 - a % b (modulo)

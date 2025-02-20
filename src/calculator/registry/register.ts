@@ -28,6 +28,7 @@ export function register(): void {
 		type: Enums.UnaryOpTypes.Prefix,
 		callback: (a) => -a,
 	});
+
 	Registry.registerUnaryOp("factorial", {
 		symbol: "!",
 		type: Enums.UnaryOpTypes.Postfix,
@@ -37,10 +38,11 @@ export function register(): void {
 
 	//#region Unary Functions
 	Registry.registerUnaryOp("abs", {
-		symbol: "absolute",
+		symbol: "abs",
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.abs,
 	});
+
 	Registry.registerUnaryOp("floor", {
 		symbol: "floor",
 		type: Enums.UnaryOpTypes.Function,
@@ -56,6 +58,7 @@ export function register(): void {
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.round,
 	});
+
 	Registry.registerUnaryOp("sqrt", {
 		symbol: "sqrt",
 		type: Enums.UnaryOpTypes.Function,
@@ -76,6 +79,7 @@ export function register(): void {
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.log10,
 	});
+
 	Registry.registerUnaryOp("sin", {
 		symbol: "sin",
 		type: Enums.UnaryOpTypes.Function,
@@ -106,6 +110,7 @@ export function register(): void {
 		type: Enums.UnaryOpTypes.Function,
 		callback: Math.atan,
 	});
+
 	Registry.registerUnaryOp("gamma", {
 		symbol: "Gamma",
 		type: Enums.UnaryOpTypes.Function,
@@ -139,6 +144,7 @@ export function register(): void {
 		callback: (a, b) => Math.floor(a / b),
 		precedence: 1,
 	});
+
 	Registry.registerBinaryOp("pow", {
 		symbol: "**",
 		callback: (a, b) => a ** b,
