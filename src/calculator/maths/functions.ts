@@ -28,7 +28,11 @@ export namespace Functions {
 		let x = c[0];
 		for (let i = 1; i < g + 2; i++) x += c[i] / (z + i);
 		const t = z + g + 0.5;
-		return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+
+		const p = Math.pow(t, z + 0.5);
+		if (p === Infinity) return Infinity;
+
+		return Math.sqrt(2 * Math.PI) * p * Math.exp(-t) * x;
 	}
 
 	export function permutation(n: number, r: number): number {

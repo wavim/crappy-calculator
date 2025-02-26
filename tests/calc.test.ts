@@ -32,6 +32,7 @@ describe("calculator test", () => {
 		run("log100", 2);
 		run("round0.5", 1);
 		run("floor0.5", 0);
+		run("Gamma99999", Infinity);
 	});
 	test("unary functions (mixed)", () => {
 		run("logabs-3", Math.log10(3));
@@ -49,6 +50,8 @@ describe("calculator test", () => {
 		run("2**3", 8);
 		run("2^3", 8);
 		run("2%3", 2);
+		run("4P2", 12);
+		run("3C2", 3);
 	});
 	test("binary operators (mixed)", () => {
 		run("2+3-1", 4);
