@@ -1,6 +1,6 @@
 import { Enums } from "../constants/enums";
 import { Registry } from "../registry/registry";
-import { register } from "../registry/register";
+import "../registry/register";
 
 /**
  * Tokenize raw input string into lexical tokens
@@ -34,7 +34,6 @@ export namespace Tokenizer {
 		}
 	}
 
-	register();
 	const escapeSymbol = (pattern: string) => pattern.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	const TOKEN_TYPE_CNT = Object.keys(Enums.TokenTypes).length / 2;
 	const TOKEN_TYPES_RE: { [type: number]: RegExp } = {

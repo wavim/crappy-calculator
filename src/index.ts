@@ -40,12 +40,7 @@ function updateResult(input: string): void {
 function renderResult(tokens: Tokenizer.Token[], value: number): void {
 	resultElement.innerHTML = "";
 
-	const sum = (array: number[]) => {
-		let sum = 0;
-		for (const element of array) sum += element;
-		return sum;
-	};
-	if (sum(tokens.map((token) => token.symbol.length)) > RENDER_LENGTH_LIMIT) {
+	if (tokens.reduce((sum, token) => sum + token.symbol.length, <number>0) > RENDER_LENGTH_LIMIT) {
 		const expressionElement = document.createElement("p");
 		expressionElement.textContent = "Expression";
 		resultElement.appendChild(expressionElement);
