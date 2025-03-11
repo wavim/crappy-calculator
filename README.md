@@ -46,6 +46,8 @@ Below are the items registered in the master branch.
 
 - x! (factorial)
 
+- (x)d (degree)
+
 #### Unary Functions
 
 - abs(x) (absolute value)
@@ -76,7 +78,7 @@ Below are the items registered in the master branch.
 - a / b (division)
 - a // b (integer division)
 
-- a ** b (power)
+- a \*\* b (power)
 - a ^ b (power alias)
 - a % b (modulo)
 
@@ -88,7 +90,7 @@ Below are the items registered in the master branch.
 - (n) P (r) (permutation)
 - (n) C (r) (combination)
 
-> It is worth noting that in some cases brackets () are not needed e.g. nPr and (n)P(r) is the same.  
+> It is worth noting that in some cases brackets () are not needed e.g. (x)d and xd, nPr and (n)P(r), are the same.  
 > However, this is not always the case, and brackets should be preferred to avoid ambiguity.  
 > If not, expressions like -1^0.5 = NaN can be confusing as you might think it is equivalent to -(1^0.5),
 > but it is actually interpreted as (-1)^0.5.

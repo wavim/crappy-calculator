@@ -32,6 +32,12 @@ Registry.registerUnaryOp("factorial", {
 	type: Enums.UnaryOpTypes.Postfix,
 	callback: Functions.factorial,
 });
+
+Registry.registerUnaryOp("degree", {
+	symbol: "d",
+	type: Enums.UnaryOpTypes.Postfix,
+	callback: (d) => (Math.PI * d) / 180,
+});
 //#endregion
 
 //#region Unary Functions

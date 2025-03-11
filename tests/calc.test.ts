@@ -39,6 +39,7 @@ describe("calculator test", () => {
 		run("tancosPI", Math.tan(-1));
 		run("LnLnE", 0);
 		run("tanLn3!", Math.tan(Math.log(6)));
+		run("sin90d", 1);
 	});
 
 	test("binary operators", () => {
