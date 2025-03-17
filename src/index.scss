@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+
 $bg-primary: #eff1f5;
 $bg-secondary: #f4f7ff;
 $text-primary: #4c4f69;
@@ -20,7 +22,7 @@ $token-binaryop: #de66de;
 @mixin text {
 	font-size: 1rem;
 	letter-spacing: 0.05rem;
-	font-family: "Courier New", Courier, monospace;
+	font-family: "Space Mono", monospace;
 	color: $text-primary;
 
 	@include responsive {
