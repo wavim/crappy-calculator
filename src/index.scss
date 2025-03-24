@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200&display=swap");
 
 $bg-primary: #eff1f5;
 $bg-secondary: #f4f7ff;
 $text-primary: #4c4f69;
 $text-secondary: #8c8fa1;
 $border-radius: 1rem;
-$shadow: rgba(124, 127, 147, 0.3);
+$shadow: rgba(124, 127, 147, 0.2);
 $default-ease: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
 $token-bracket: #64a7ea;
@@ -22,7 +22,7 @@ $token-binaryop: #de66de;
 @mixin text {
 	font-size: 1rem;
 	letter-spacing: 0.05rem;
-	font-family: "Space Mono", monospace;
+	font-family: "JetBrains Mono", monospace;
 	color: $text-primary;
 
 	@include responsive {
@@ -55,7 +55,7 @@ div#root {
 
 		&:hover:not(:focus) {
 			box-shadow: 0 0 3rem 1rem $shadow;
-			transform: scale(1.05);
+			transform: scale(1.01);
 		}
 		&:focus {
 			box-shadow: 0 0 2rem $shadow;
