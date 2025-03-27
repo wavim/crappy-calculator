@@ -28,13 +28,14 @@ export namespace Tokenizer {
 		) {}
 
 		toString(): string {
-			return `Token[${this.meta.from}-${this.meta.to}]<${Enums.TokenTypes[this.type]}> ${
-				this.symbol
-			}`;
+			return `Token[${this.meta.from}-${this.meta.to}]<${
+				Enums.TokenTypes[this.type]
+			}> ${this.symbol}`;
 		}
 	}
 
-	const escapeSymbol = (pattern: string) => pattern.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	const escapeSymbol = (pattern: string) =>
+		pattern.replaceAll(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	const TOKEN_TYPE_CNT = Object.keys(Enums.TokenTypes).length / 2;
 	const TOKEN_TYPES_RE: { [type: number]: RegExp } = {
 		[Enums.TokenTypes.Bracket]: /[()]/,
@@ -61,7 +62,9 @@ export namespace Tokenizer {
 	function digest(input: string, index: number, tokens: Token[]): string {
 		let match: string | undefined;
 		for (let type = 0; type < TOKEN_TYPE_CNT; type++) {
-			const tokenTypeRE = new RegExp(`^\\s*(?:${TOKEN_TYPES_RE[type].source})\\s*`);
+			const tokenTypeRE = new RegExp(
+				`^\\s*(?:${TOKEN_TYPES_RE[type].source})\\s*`,
+			);
 			match = input.match(tokenTypeRE)?.[0];
 			if (match === undefined) continue;
 
@@ -106,7 +109,8 @@ export namespace Tokenizer {
 			lookback?.symbol === ")" ||
 			lookback?.type === Enums.TokenTypes.Numeral ||
 			(lookback?.type === Enums.TokenTypes.UnaryOp &&
-				Registry.getUnaryOpWithSymbol(lookback.symbol).type === Enums.UnaryOpTypes.Postfix);
+				Registry.getUnaryOpWithSymbol(lookback.symbol).type ===
+					Enums.UnaryOpTypes.Postfix);
 		if (symbol === "(" && afterEntry && Registry.existBinaryOp("mul")) {
 			const implicitMul = new Token(
 				Enums.TokenTypes.BinaryOp,
@@ -129,8 +133,13 @@ export namespace Tokenizer {
 			lookback?.symbol === ")" ||
 			lookback?.type === Enums.TokenTypes.Numeral ||
 			(lookback?.type === Enums.TokenTypes.UnaryOp &&
-				Registry.getUnaryOpWithSymbol(lookback.symbol).type === Enums.UnaryOpTypes.Postfix);
-		if (Registry.existConstantWithSymbol(symbol) && afterEntry && Registry.existBinaryOp("mul")) {
+				Registry.getUnaryOpWithSymbol(lookback.symbol).type ===
+					Enums.UnaryOpTypes.Postfix);
+		if (
+			Registry.existConstantWithSymbol(symbol) &&
+			afterEntry &&
+			Registry.existBinaryOp("mul")
+		) {
 			const implicitMul = new Token(
 				Enums.TokenTypes.BinaryOp,
 				Registry.getBinaryOp("mul").symbol,
@@ -152,7 +161,8 @@ export namespace Tokenizer {
 			lookback?.symbol === ")" ||
 			lookback?.type === Enums.TokenTypes.Numeral ||
 			(lookback?.type === Enums.TokenTypes.UnaryOp &&
-				Registry.getUnaryOpWithSymbol(lookback.symbol).type === Enums.UnaryOpTypes.Postfix);
+				Registry.getUnaryOpWithSymbol(lookback.symbol).type ===
+					Enums.UnaryOpTypes.Postfix);
 		switch (Registry.getUnaryOpWithSymbol(symbol).type) {
 			case Enums.UnaryOpTypes.Prefix: {
 				if (afterEntry) return false;

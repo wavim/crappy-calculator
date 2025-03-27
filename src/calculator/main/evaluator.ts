@@ -40,23 +40,39 @@ export namespace Evaluator {
 	}
 
 	function handleUnaryOpTree(tree: Parser.UnaryOpTree): number {
-		if (!tree.argument) throw new SyntaxError(`Unary operator lacks argument at ${position(tree.meta)}.`);
+		if (!tree.argument) {
+			throw new SyntaxError(
+				`Unary operator lacks argument at ${position(tree.meta)}.`,
+			);
+		}
 
-		const callback = Registry.getUnaryOpWithSymbol(tree.operator.symbol).callback;
+		const callback = Registry.getUnaryOpWithSymbol(
+			tree.operator.symbol,
+		).callback;
 		return callback(evaluate(tree.argument));
 	}
 
 	function handleBinaryOpTree(tree: Parser.BinaryOpTree): number {
-		if (!tree.left) throw new SyntaxError(`Binary operator lacks left operand at ${position(tree.meta)}.`);
+		if (!tree.left) {
+			throw new SyntaxError(
+				`Binary operator lacks left operand at ${position(tree.meta)}.`,
+			);
+		}
 		if (!tree.right) {
-			throw new SyntaxError(`Binary operator lacks right operand at ${position(tree.meta)}.`);
+			throw new SyntaxError(
+				`Binary operator lacks right operand at ${position(tree.meta)}.`,
+			);
 		}
 
-		const callback = Registry.getBinaryOpWithSymbol(tree.operator.symbol).callback;
+		const callback = Registry.getBinaryOpWithSymbol(
+			tree.operator.symbol,
+		).callback;
 		const left = evaluate(tree.left);
 		const right = evaluate(tree.right);
 		return callback(left, right);
 	}
 
-	const position = (meta: { from: number; to: number }) => `${meta.from} - ${meta.to}`;
+	const position = (meta: { from: number; to: number }) => {
+		return `${meta.from} - ${meta.to}`;
+	};
 }

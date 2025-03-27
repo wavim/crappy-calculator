@@ -21,7 +21,9 @@ function updateResult(input: string): void {
 	let result: ReturnType<typeof Calculator.calculate>;
 	try {
 		result = Calculator.calculate(
-			input.length === 0 ? <string>inputElement.getAttribute("placeholder") : input,
+			input.length === 0
+				? <string>inputElement.getAttribute("placeholder")
+				: input,
 		);
 	} catch (error) {
 		resultElement.innerHTML = "";
@@ -33,14 +35,19 @@ function updateResult(input: string): void {
 		return;
 	}
 
+	console.log("<AST>", result.tree.toJSON());
 	console.log(`${result.tree}`);
+
 	renderResult(result.tokens, result.value);
 }
 
 function renderResult(tokens: Tokenizer.Token[], value: number): void {
 	resultElement.innerHTML = "";
 
-	if (tokens.reduce((sum, token) => sum + token.symbol.length, <number>0) > RENDER_LENGTH_LIMIT) {
+	if (
+		tokens.reduce((sum, token) => sum + token.symbol.length, <number>0) >
+		RENDER_LENGTH_LIMIT
+	) {
 		const expressionElement = document.createElement("p");
 		expressionElement.textContent = "Expression";
 		resultElement.appendChild(expressionElement);
