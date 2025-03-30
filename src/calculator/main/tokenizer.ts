@@ -41,7 +41,7 @@ export namespace Tokenizer {
 		toJSON(): Object {
 			return {
 				symbol: this.symbol,
-				position: this.position,
+				meta: this.meta,
 			};
 		}
 	}
