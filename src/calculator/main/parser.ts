@@ -101,9 +101,8 @@ export namespace Parser {
 			super(Enums.TreeTypes.Numeral, NUMERAL_PRECEDENCE);
 		}
 
-		toString(level: number = 1): string {
-			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `<Num>${indent}${this.numToken}`;
+		toString(): string {
+			return `<Num> ${this.numToken}`;
 		}
 
 		toJSON(): Object {
@@ -133,7 +132,7 @@ export namespace Parser {
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `<Unary>${indent}Op: ${this.opToken} (${
+			return `<Unary>${indent}UOp: ${this.opToken} (${
 				this.operator.id
 			})${indent}Arg: ${
 				this.argument ? this.argument.toString(level + 1) : "<Empty>"
@@ -181,11 +180,11 @@ export namespace Parser {
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `<Binary>${indent}Op: ${this.opToken} (${
+			return `<Binary>${indent}BOp: ${this.opToken} (${
 				this.operator.id
-			})${indent}Left: ${
+			})${indent}Lft: ${
 				this.left ? this.left.toString(level + 1) : "<Empty>"
-			}${indent}Right: ${
+			}${indent}Rgt: ${
 				this.right ? this.right.toString(level + 1) : "<Empty>"
 			}`;
 		}
