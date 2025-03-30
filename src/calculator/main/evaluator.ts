@@ -1,5 +1,7 @@
 import { Enums } from "../constants/enums";
+
 import { Registry } from "../registry/registry";
+
 import { Parser } from "./parser";
 
 /**
@@ -33,7 +35,7 @@ export namespace Evaluator {
 	}
 
 	function handleNumeralTree(tree: Parser.NumeralTree): number {
-		const symbol = tree.numeral.symbol;
+		const symbol = tree.numToken.symbol;
 		return Registry.existConstantWithSymbol(symbol)
 			? Registry.getConstantWithSymbol(symbol).value
 			: Number(symbol);
@@ -42,7 +44,7 @@ export namespace Evaluator {
 	function handleUnaryOpTree(tree: Parser.UnaryOpTree): number {
 		if (!tree.argument) {
 			throw new SyntaxError(
-				`Unary operator lacks argument at ${position(tree.meta)}.`,
+				`Unary operator lacks argument at ${position(tree.opToken.meta)}.`,
 			);
 		}
 
@@ -55,12 +57,14 @@ export namespace Evaluator {
 	function handleBinaryOpTree(tree: Parser.BinaryOpTree): number {
 		if (!tree.left) {
 			throw new SyntaxError(
-				`Binary operator lacks left operand at ${position(tree.meta)}.`,
+				`Binary operator lacks left operand at ${position(tree.opToken.meta)}.`,
 			);
 		}
 		if (!tree.right) {
 			throw new SyntaxError(
-				`Binary operator lacks right operand at ${position(tree.meta)}.`,
+				`Binary operator lacks right operand at ${position(
+					tree.opToken.meta,
+				)}.`,
 			);
 		}
 

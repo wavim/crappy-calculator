@@ -1,6 +1,8 @@
 import { Enums } from "../constants/enums";
-import { Registry } from "./registry";
+
 import { Functions } from "../maths/functions";
+
+import { Registry } from "./registry";
 
 // Place to define custom constants, unary operators and binary operators
 

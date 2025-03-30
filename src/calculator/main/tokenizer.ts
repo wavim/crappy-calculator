@@ -1,4 +1,5 @@
 import { Enums } from "../constants/enums";
+
 import { Registry } from "../registry/registry";
 import "../registry/register";
 
@@ -28,9 +29,18 @@ export namespace Tokenizer {
 		) {}
 
 		toString(): string {
-			return `Token[${this.meta.from}-${this.meta.to}]<${
-				Enums.TokenTypes[this.type]
-			}> ${this.symbol}`;
+			return `[${
+				this.meta.from === this.meta.to
+					? this.meta.from
+					: `${this.meta.from}-${this.meta.to}`
+			}] ${this.symbol}`;
+		}
+
+		toJSON(): Object {
+			return {
+				symbol: this.symbol,
+				meta: this.meta,
+			};
 		}
 	}
 

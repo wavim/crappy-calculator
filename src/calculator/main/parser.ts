@@ -1,5 +1,7 @@
 import { Enums } from "../constants/enums";
+
 import { Registry } from "../registry/registry";
+
 import { Tokenizer } from "./tokenizer";
 
 /**
@@ -84,29 +86,29 @@ export namespace Parser {
 		}
 
 		toString(): string {
-			return `${this.content ? this.content.toString() : "<Empty>"}`;
+			return this.content ? this.content.toString() : "<Empty>";
 		}
 
-		toJSON(): Object | undefined {
-			return this.content?.toJSON();
+		toJSON(): Object {
+			return this.content?.toJSON() ?? {};
 		}
 	}
 	export class NumeralTree extends Tree {
 		constructor(
 			public parent: Exclude<TreeTypesType, NumeralTree>,
-			public numeral: Tokenizer.Token,
+			public numToken: Tokenizer.Token,
 		) {
 			super(Enums.TreeTypes.Numeral, NUMERAL_PRECEDENCE);
 		}
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `Tree<Numeral>${indent}${this.numeral}`;
+			return `<Num>${indent}${this.numToken}`;
 		}
 
 		toJSON(): Object {
 			return {
-				numeral: this.numeral,
+				numeral: this.numToken.toJSON(),
 			};
 		}
 	}
@@ -121,29 +123,31 @@ export namespace Parser {
 		}
 
 		operator: Registry.UnaryOp;
-		meta: { from: number; to: number };
 		constructor(
 			public parent: Exclude<TreeTypesType, NumeralTree>,
-			operatorToken: Tokenizer.Token,
+			public opToken: Tokenizer.Token,
 		) {
 			super(Enums.TreeTypes.UnaryOp, UNARYOP_PRECEDENCE);
-			this.operator = Registry.getUnaryOpWithSymbol(operatorToken.symbol);
-			this.meta = operatorToken.meta;
+			this.operator = Registry.getUnaryOpWithSymbol(opToken.symbol);
 		}
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `Tree<Unary>${indent}Operator: ${this.operator.id} (${
-				this.operator.symbol
-			})${indent}Argument: ${
+			return `<Unary>${indent}Op: ${this.opToken} (${
+				this.operator.id
+			})${indent}Arg: ${
 				this.argument ? this.argument.toString(level + 1) : "<Empty>"
 			}`;
 		}
 
 		toJSON(): Object {
 			return {
-				operator: this.operator,
-				argument: this.argument?.toJSON(),
+				operator: {
+					...this.opToken.toJSON(),
+					...this.operator,
+					type: Enums.UnaryOpTypes[this.operator.type],
+				},
+				argument: this.argument?.toJSON() ?? {},
 			};
 		}
 	}
@@ -166,21 +170,19 @@ export namespace Parser {
 		}
 
 		operator: Registry.BinaryOp;
-		meta: { from: number; to: number };
 		constructor(
 			public parent: Exclude<TreeTypesType, NumeralTree>,
-			operatorToken: Tokenizer.Token,
+			public opToken: Tokenizer.Token,
 		) {
-			const operator = Registry.getBinaryOpWithSymbol(operatorToken.symbol);
+			const operator = Registry.getBinaryOpWithSymbol(opToken.symbol);
 			super(Enums.TreeTypes.BinaryOp, operator.precedence);
 			this.operator = operator;
-			this.meta = operatorToken.meta;
 		}
 
 		toString(level: number = 1): string {
 			const indent = "\n" + "  \u2503  ".repeat(level);
-			return `Tree<Binary>${indent}Operator: ${this.operator.id} (${
-				this.operator.symbol
+			return `<Binary>${indent}Op: ${this.opToken} (${
+				this.operator.id
 			})${indent}Left: ${
 				this.left ? this.left.toString(level + 1) : "<Empty>"
 			}${indent}Right: ${
@@ -190,9 +192,9 @@ export namespace Parser {
 
 		toJSON(): Object {
 			return {
-				operator: this.operator,
-				left: this.left?.toJSON(),
-				right: this.right?.toJSON(),
+				operator: { ...this.opToken.toJSON(), ...this.operator },
+				left: this.left?.toJSON() ?? {},
+				right: this.right?.toJSON() ?? {},
 			};
 		}
 	}

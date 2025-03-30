@@ -18,13 +18,16 @@ function updateResult(input: string): void {
 	console.clear();
 	resultElement.classList.remove("error");
 
-	let result: ReturnType<typeof Calculator.calculate>;
+	let result!: ReturnType<typeof Calculator.calculate>;
+	let time!: number;
 	try {
+		const start = performance.now();
 		result = Calculator.calculate(
 			input.length === 0
 				? <string>inputElement.getAttribute("placeholder")
 				: input,
 		);
+		time = performance.now() - start;
 	} catch (error) {
 		resultElement.innerHTML = "";
 		resultElement.classList.add("error");
@@ -35,6 +38,7 @@ function updateResult(input: string): void {
 		return;
 	}
 
+	console.log(`Calculated in ${time}ms.`);
 	console.log("<AST>", result.tree.toJSON());
 	console.log(`${result.tree}`);
 
