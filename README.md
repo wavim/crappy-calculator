@@ -4,12 +4,12 @@ A web calculator that supports custom defined constants, unary operators
 (functions) and binary operators (functions).
 
 The calculator logic is implemented with a tokenizer (lexer), a LL parser and an
-evaluator,
+evaluator, all written by me ad hoc without the help of generator tools.
 
 - The tokenizer is responsible for lexing the input string into lexical tokens
   with a Deterministic Pushdown Automaton (basically, with a stack/lookbehind).
-- The left-most derivation parser is responsible for constructing an Abstract
-  Syntax Tree from the tokens.
+- The ad hoc left-most derivation parser is responsible for constructing an
+  Abstract Syntax Tree from the tokens.
 - The evaluator is responsible for recursively evaluating the tree to get the
   final expression value.
 
