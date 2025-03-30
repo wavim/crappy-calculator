@@ -17,7 +17,7 @@ export namespace Parser {
 			index: 0,
 			position: () => {
 				const token = runtime.tokens[runtime.index];
-				return `${token.meta.from} - ${token.meta.to}`;
+				return token.position;
 			},
 			tokens,
 			pointer: root,

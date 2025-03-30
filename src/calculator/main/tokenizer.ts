@@ -28,18 +28,20 @@ export namespace Tokenizer {
 			public meta: { from: number; to: number },
 		) {}
 
+		get position(): string {
+			return this.meta.from === this.meta.to
+				? `${this.meta.from}`
+				: `${this.meta.from}-${this.meta.to}`;
+		}
+
 		toString(): string {
-			return `[${
-				this.meta.from === this.meta.to
-					? this.meta.from
-					: `${this.meta.from}-${this.meta.to}`
-			}] ${this.symbol}`;
+			return `[${this.position}] ${this.symbol}`;
 		}
 
 		toJSON(): Object {
 			return {
 				symbol: this.symbol,
-				meta: this.meta,
+				position: this.position,
 			};
 		}
 	}

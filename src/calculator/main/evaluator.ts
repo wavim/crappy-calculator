@@ -44,7 +44,7 @@ export namespace Evaluator {
 	function handleUnaryOpTree(tree: Parser.UnaryOpTree): number {
 		if (!tree.argument) {
 			throw new SyntaxError(
-				`Unary operator lacks argument at ${position(tree.opToken.meta)}.`,
+				`Unary operator lacks argument at ${tree.opToken.position}.`,
 			);
 		}
 
@@ -57,14 +57,12 @@ export namespace Evaluator {
 	function handleBinaryOpTree(tree: Parser.BinaryOpTree): number {
 		if (!tree.left) {
 			throw new SyntaxError(
-				`Binary operator lacks left operand at ${position(tree.opToken.meta)}.`,
+				`Binary operator lacks left operand at ${tree.opToken.position}.`,
 			);
 		}
 		if (!tree.right) {
 			throw new SyntaxError(
-				`Binary operator lacks right operand at ${position(
-					tree.opToken.meta,
-				)}.`,
+				`Binary operator lacks right operand at ${tree.opToken.position}.`,
 			);
 		}
 
@@ -75,8 +73,4 @@ export namespace Evaluator {
 		const right = evaluate(tree.right);
 		return callback(left, right);
 	}
-
-	const position = (meta: { from: number; to: number }) => {
-		return `${meta.from} - ${meta.to}`;
-	};
 }
