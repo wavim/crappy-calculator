@@ -44,6 +44,7 @@ Below are the items registered in the master branch.
 
 - E = 2.71828... ($e$)
 - PI = 3.14159... ($\pi$)
+- INF = $\infty$
 
 #### Unary Operators
 

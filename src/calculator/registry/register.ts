@@ -15,6 +15,10 @@ Registry.registerConstant("pi", {
 	symbol: "PI",
 	value: Math.PI,
 });
+Registry.registerConstant("inf", {
+	symbol: "INF",
+	value: Infinity,
+});
 //#endregion
 
 //#region Unary Operators
