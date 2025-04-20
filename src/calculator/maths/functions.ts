@@ -43,4 +43,15 @@ export namespace Functions {
 	export function combination(n: number, r: number): number {
 		return permutation(n, r) / factorial(r);
 	}
+
+	export function gcd(a: number, b: number): number {
+		if (!Number.isInteger(a) || !Number.isInteger(b)) return NaN;
+
+		while (b !== 0) {
+			if (a > b) [a, b] = [b, a];
+			b = b % a;
+		}
+
+		return a;
+	}
 }

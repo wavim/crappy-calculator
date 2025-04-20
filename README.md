@@ -44,37 +44,31 @@ Below are the items registered in the master branch.
 
 - E = 2.71828... ($e$)
 - PI = 3.14159... ($\pi$)
-- INF = $\infty$
+- INF = $\infty$ (infinity)
 
 #### Unary Operators
 
 - \+x (identity)
 - \-x (negation)
-
 - x! (factorial)
-
 - (x)d (degree)
 
 #### Unary Functions
 
 - abs(x) (absolute value)
-
 - floor(x) (floor)
 - ceil(x) (ceil)
 - round(x) (round)
-
 - sqrt(x) (square root)
 - exp(x) (exponentiation base $e$)
 - Ln(x) (natural log)
 - log(x) (log base 10)
-
 - sin(x) (sin radians)
 - cos(x) (cos radians)
 - tan(x) (tan radians)
 - asin(x) (arcsin)
 - acos(x) (arccos)
 - atan(x) (arctan)
-
 - Gamma(x) (gamma function)
 
 #### Binary Operators
@@ -84,7 +78,6 @@ Below are the items registered in the master branch.
 - a \* b (multiplication)
 - a / b (division)
 - a // b (integer division)
-
 - a \*\* b (power)
 - a ^ b (power alias)
 - a % b (modulo)
@@ -93,9 +86,9 @@ Below are the items registered in the master branch.
 
 - (a) min (b) (minimum)
 - (a) max (b) (maximum)
-
 - (n) P (r) (permutation)
 - (n) C (r) (combination)
+- (n) gcd (r) (integer gcd)
 
 > It is worth noting that in some cases brackets () are not needed e.g. (x)d and
 > xd, nPr and (n)P(r), are the same.  
@@ -105,6 +98,6 @@ Below are the items registered in the master branch.
 > is equivalent to -(1^0.5), but it is actually interpreted as (-1)^0.5.
 
 You can also define your own items, or mess around with the existing. (Switching
-"+"s with "-"s is evilly fun lol)
+'+'s with '-'s is evilly fun)
 
 Remember to play with the demo!
