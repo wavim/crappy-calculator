@@ -147,17 +147,20 @@ export namespace Tokenizer {
 			(lookback?.type === Enums.TokenTypes.UnaryOp &&
 				Registry.getUnaryOpWithSymbol(lookback.symbol).type ===
 					Enums.UnaryOpTypes.Postfix);
-		if (
-			Registry.existConstantWithSymbol(symbol) &&
-			afterEntry &&
-			Registry.existBinaryOp("mul")
-		) {
-			const implicitMul = new Token(
-				Enums.TokenTypes.BinaryOp,
-				Registry.getBinaryOp("mul").symbol,
-				meta,
-			);
-			tokens.push(implicitMul);
+		if (afterEntry) {
+			if (
+				Registry.existConstantWithSymbol(symbol) &&
+				Registry.existBinaryOp("mul")
+			) {
+				const implicitMul = new Token(
+					Enums.TokenTypes.BinaryOp,
+					Registry.getBinaryOp("mul").symbol,
+					meta,
+				);
+				tokens.push(implicitMul);
+			} else {
+				return false;
+			}
 		}
 		const numeral = new Token(Enums.TokenTypes.Numeral, symbol, meta);
 		return tokens.push(numeral);
