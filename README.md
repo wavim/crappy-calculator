@@ -4,7 +4,10 @@ A web calculator that supports custom defined constants, unary operators
 (functions) and binary operators (functions).
 
 The calculator logic is implemented with a tokenizer (lexer), a LL parser and an
-evaluator, all written by me ad hoc without the help of generator tools.
+evaluator, without the help of generator tools.
+
+> It is worth noting that I had no prior knowledge on parsing theory when I
+> wrote this, this is completely written from scratch.
 
 - The tokenizer is responsible for lexing the input string into lexical tokens
   with a Deterministic Pushdown Automaton (basically, with a stack/lookbehind).
