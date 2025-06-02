@@ -10,13 +10,17 @@ export namespace Registry {
 		symbol: string;
 		value: number;
 	};
+
 	export type UnaryOpCallback = (argument: number) => number;
+
 	export type UnaryOp = Id & {
 		symbol: string;
 		type: Enums.UnaryOpTypes;
 		callback: UnaryOpCallback;
 	};
+
 	export type BinaryOpCallback = (left: number, right: number) => number;
+
 	export type BinaryOp = Id & {
 		symbol: string;
 		callback: BinaryOpCallback;
@@ -25,8 +29,10 @@ export namespace Registry {
 
 	export const constantRegistry: Map<string, Constant> = new Map();
 	export const constantSymbolRegistry: Map<string, Constant> = new Map();
+
 	export const unaryOpRegistry: Map<string, UnaryOp> = new Map();
 	export const unaryOpSymbolRegistry: Map<string, UnaryOp> = new Map();
+
 	export const binaryOpRegistry: Map<string, BinaryOp> = new Map();
 	export const binaryOpSymbolRegistry: Map<string, BinaryOp> = new Map();
 
@@ -36,12 +42,14 @@ export namespace Registry {
 	export function existConstantWithSymbol(symbol: string): boolean {
 		return constantSymbolRegistry.has(symbol);
 	}
+
 	export function existUnaryOp(id: string): boolean {
 		return unaryOpRegistry.has(id);
 	}
 	export function existUnaryOpWithSymbol(symbol: string): boolean {
 		return unaryOpSymbolRegistry.has(symbol);
 	}
+
 	export function existBinaryOp(id: string): boolean {
 		return binaryOpRegistry.has(id);
 	}
@@ -107,9 +115,11 @@ export namespace Registry {
 	export function getConstantSymbols(): string[] {
 		return [...constantSymbolRegistry.keys()];
 	}
+
 	export function getUnaryOpSymbols(): string[] {
 		return [...unaryOpSymbolRegistry.keys()];
 	}
+
 	export function getBinaryOpSymbols(): string[] {
 		return [...binaryOpSymbolRegistry.keys()];
 	}
@@ -126,6 +136,7 @@ export namespace Registry {
 		}
 		return constantSymbolRegistry.get(symbol)!;
 	}
+
 	export function getUnaryOp(id: string): UnaryOp {
 		if (!existUnaryOp(id)) {
 			throw new Error(`Unary operator with id ${id} is not registered.`);
@@ -140,6 +151,7 @@ export namespace Registry {
 		}
 		return unaryOpSymbolRegistry.get(symbol)!;
 	}
+
 	export function getBinaryOp(id: string): BinaryOp {
 		if (!existBinaryOp(id)) {
 			throw new Error(`Binary operator with id ${id} is not registered.`);

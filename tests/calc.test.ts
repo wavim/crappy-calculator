@@ -16,7 +16,9 @@ describe("calculator test", () => {
 		run("-(1-2)", 1);
 		run("4!", 24);
 		run("(4+1)!", 120);
+		run("125%", 1.25);
 	});
+
 	test("unary operators (mixed)", () => {
 		run("+-1", -1);
 		run("--1", 1);
@@ -34,6 +36,7 @@ describe("calculator test", () => {
 		run("floor0.5", 0);
 		run("Gamma99999", Infinity);
 	});
+
 	test("unary functions (mixed)", () => {
 		run("logabs-3", Math.log10(3));
 		run("tancosPI", Math.tan(-1));
@@ -50,10 +53,11 @@ describe("calculator test", () => {
 		run("3//2", 1);
 		run("2**3", 8);
 		run("2^3", 8);
-		run("2%3", 2);
+		run("2mod3", 2);
 		run("4P2", 12);
 		run("3C2", 3);
 	});
+
 	test("binary operators (mixed)", () => {
 		run("2+3-1", 4);
 		run("2-3*4", -10);
@@ -61,12 +65,12 @@ describe("calculator test", () => {
 		run("2/(3+2)", 2 / 5);
 		run("2*2^3+1", 17);
 		run("2*(2^3+1)", 18);
-		run("(2+4)%3*5", 0);
+		run("(2+4)mod3*5", 0);
 	});
 
 	test("complex expressions", () => {
 		run(
-			"1+2*(3-4E)min(LnPI)-(5/6)^7%8",
+			"1+2*(3-4E)min(LnPI)-(5/6)^7mod8",
 			1 + 2 * Math.min(3 - 4 * Math.E, Math.log(Math.PI)) - ((5 / 6) ** 7 % 8),
 		);
 	});

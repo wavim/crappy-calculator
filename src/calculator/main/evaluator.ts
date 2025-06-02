@@ -16,12 +16,15 @@ export namespace Evaluator {
 			case Enums.TreeTypes.Root: {
 				return handleRootTree(<Parser.RootTree>tree);
 			}
+
 			case Enums.TreeTypes.Numeral: {
 				return handleNumeralTree(<Parser.NumeralTree>tree);
 			}
+
 			case Enums.TreeTypes.UnaryOp: {
 				return handleUnaryOpTree(<Parser.UnaryOpTree>tree);
 			}
+
 			case Enums.TreeTypes.BinaryOp: {
 				return handleBinaryOpTree(<Parser.BinaryOpTree>tree);
 			}
@@ -36,6 +39,7 @@ export namespace Evaluator {
 
 	function handleNumeralTree(tree: Parser.NumeralTree): number {
 		const symbol = tree.numToken.symbol;
+
 		return Registry.existConstantWithSymbol(symbol)
 			? Registry.getConstantWithSymbol(symbol).value
 			: Number(symbol);
@@ -51,6 +55,7 @@ export namespace Evaluator {
 		const callback = Registry.getUnaryOpWithSymbol(
 			tree.operator.symbol,
 		).callback;
+
 		return callback(evaluate(tree.argument));
 	}
 
@@ -69,8 +74,10 @@ export namespace Evaluator {
 		const callback = Registry.getBinaryOpWithSymbol(
 			tree.operator.symbol,
 		).callback;
+
 		const left = evaluate(tree.left);
 		const right = evaluate(tree.right);
+
 		return callback(left, right);
 	}
 }

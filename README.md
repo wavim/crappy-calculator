@@ -50,6 +50,7 @@ Below are the items registered in the master branch.
 
 - \+x (identity)
 - \-x (negation)
+- x% (percentage)
 - x! (factorial)
 - (x)d (degree)
 
@@ -80,7 +81,7 @@ Below are the items registered in the master branch.
 - a // b (integer division)
 - a \*\* b (power)
 - a ^ b (power alias)
-- a % b (modulo)
+- a mod b (modulo)
 
 #### Binary Functions
 

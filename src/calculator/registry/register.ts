@@ -36,6 +36,12 @@ Registry.registerUnaryOp("neg", {
 	callback: (a) => -a,
 });
 
+Registry.registerUnaryOp("percent", {
+	symbol: "%",
+	type: Enums.UnaryOpTypes.Postfix,
+	callback: (a) => 0.01 * a,
+});
+
 Registry.registerUnaryOp("factorial", {
 	symbol: "!",
 	type: Enums.UnaryOpTypes.Postfix,
@@ -185,7 +191,7 @@ Registry.registerBinaryOp("pow_alias", {
 });
 
 Registry.registerBinaryOp("mod", {
-	symbol: "%",
+	symbol: "mod",
 	callback: (a, b) => a % b,
 	precedence: 2,
 });

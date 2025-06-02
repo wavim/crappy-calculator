@@ -18,6 +18,7 @@ export namespace Calculator {
 		const tokens = Tokenizer.tokenize(input);
 		const tree = Parser.parse(tokens);
 		const value = Evaluator.evaluate(tree);
+
 		return {
 			tokens,
 			tree,

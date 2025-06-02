@@ -3,6 +3,7 @@
  */
 export namespace Functions {
 	const APPROX_FACTORIAL_THRESHOLD = 100;
+
 	export function factorial(x: number): number {
 		if (x === Infinity) return Infinity;
 		if (x >= 0 && x < APPROX_FACTORIAL_THRESHOLD && Number.isInteger(x)) {
@@ -12,9 +13,11 @@ export namespace Functions {
 		}
 		return gammaLanczosApprox(x + 1);
 	}
+
 	export function gamma(z: number): number {
 		return factorial(z - 1);
 	}
+
 	function gammaLanczosApprox(z: number): number {
 		const g = 7;
 		const c = [
@@ -40,6 +43,7 @@ export namespace Functions {
 	export function permutation(n: number, r: number): number {
 		return factorial(n) / factorial(n - r);
 	}
+
 	export function combination(n: number, r: number): number {
 		return permutation(n, r) / factorial(r);
 	}

@@ -64,11 +64,7 @@ function renderResult(tokens: Tokenizer.Token[], value: number): void {
 		}
 	}
 
-	const equalElement = document.createElement("p");
-	equalElement.textContent = ` = `;
-	resultElement.appendChild(equalElement);
-
 	const valueElement = document.createElement("p");
-	valueElement.textContent = `${value}`;
+	valueElement.textContent = ` = ${value}`;
 	resultElement.appendChild(valueElement);
 }
