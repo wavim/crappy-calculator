@@ -1,462 +1,451 @@
-import { Enums } from "../constants/enums";
+import { TokenTypes, TreeTypes, UnaryOpTypes } from "../constants/enums";
+import {
+	BinaryOp,
+	UnaryOp,
+	getBinaryOpWithSymbol,
+	getUnaryOpWithSymbol,
+} from "../registry/registry";
+import { Token } from "./tokenizer";
 
-import { Registry } from "../registry/registry";
-
-import { Tokenizer } from "./tokenizer";
+type ParserRuntime = {
+	index: number;
+	tokens: Token[];
+	pointer: TreeTypesType;
+	position: () => string;
+};
 
 /**
- * Parse lexical tokens into Abstract Syntax Tree
+ * Main parsing entry for lexical tokens
  */
-export namespace Parser {
-	type ParserRuntime = {
-		index: number;
-		tokens: Tokenizer.Token[];
-		pointer: TreeTypesType;
-		position: () => string;
+export function parse(tokens: Token[]): RootTree {
+	const root = new RootTree();
+
+	const runtime: ParserRuntime = {
+		index: 0,
+		tokens,
+		pointer: root,
+
+		position: () => {
+			const token = runtime.tokens[runtime.index];
+			return token.position;
+		},
 	};
 
-	/**
-	 * Main parsing entry for lexical tokens
-	 */
-	export function parse(tokens: Tokenizer.Token[]): RootTree {
-		const root = new RootTree();
+	while (runtime.index < tokens.length) {
+		const token = tokens[runtime.index];
 
-		const runtime: ParserRuntime = {
-			index: 0,
-			tokens,
-			pointer: root,
+		switch (token.type) {
+			case TokenTypes.Bracket: {
+				handleBracket(token, runtime);
+				break;
+			}
 
-			position: () => {
-				const token = runtime.tokens[runtime.index];
-				return token.position;
-			},
+			case TokenTypes.Numeral: {
+				handleNumeral(token, runtime);
+				break;
+			}
+
+			case TokenTypes.UnaryOp: {
+				handleUnaryOp(token, runtime);
+				break;
+			}
+
+			case TokenTypes.BinaryOp: {
+				handleBinaryOp(token, runtime);
+				break;
+			}
+		}
+
+		runtime.index++;
+	}
+
+	return root;
+}
+
+export class Tree {
+	constructor(public type: TreeTypes, public precedence: number) {}
+
+	clone(): typeof this {
+		const clone = Object.create(Object.getPrototypeOf(this));
+
+		Object.defineProperties(clone, Object.getOwnPropertyDescriptors(this));
+
+		return clone;
+	}
+}
+
+export type TreeTypesType = RootTree | NumeralTree | UnaryOpTree | BinaryOpTree;
+
+const ROOT_PRECEDENCE = -1;
+const NUMERAL_PRECEDENCE = Number.MAX_SAFE_INTEGER + 1;
+const UNARYOP_PRECEDENCE = Number.MAX_SAFE_INTEGER;
+
+export class RootTree extends Tree {
+	$content?: Exclude<TreeTypesType, RootTree>;
+
+	set content(content: Exclude<TreeTypesType, RootTree>) {
+		this.$content = content;
+		content.parent = this;
+	}
+	get content(): typeof this.$content {
+		return this.$content;
+	}
+
+	constructor() {
+		super(TreeTypes.Root, ROOT_PRECEDENCE);
+	}
+
+	toString(): string {
+		return this.content ? this.content.toString() : "<Empty>";
+	}
+
+	toJSON(): Object {
+		return this.content?.toJSON() ?? {};
+	}
+}
+
+export class NumeralTree extends Tree {
+	constructor(
+		public parent: Exclude<TreeTypesType, NumeralTree>,
+		public numToken: Token,
+	) {
+		super(TreeTypes.Numeral, NUMERAL_PRECEDENCE);
+	}
+
+	toString(): string {
+		return `<Num> ${this.numToken}`;
+	}
+
+	toJSON(): Object {
+		return {
+			numeral: this.numToken.toJSON(),
 		};
+	}
+}
 
-		while (runtime.index < tokens.length) {
-			const token = tokens[runtime.index];
+export class UnaryOpTree extends Tree {
+	$argument?: Exclude<TreeTypesType, RootTree>;
 
-			switch (token.type) {
-				case Enums.TokenTypes.Bracket: {
-					handleBracket(token, runtime);
-					break;
-				}
-
-				case Enums.TokenTypes.Numeral: {
-					handleNumeral(token, runtime);
-					break;
-				}
-
-				case Enums.TokenTypes.UnaryOp: {
-					handleUnaryOp(token, runtime);
-					break;
-				}
-
-				case Enums.TokenTypes.BinaryOp: {
-					handleBinaryOp(token, runtime);
-					break;
-				}
-			}
-
-			runtime.index++;
-		}
-
-		return root;
+	set argument(argument: Exclude<TreeTypesType, RootTree>) {
+		this.$argument = argument;
+		argument.parent = this;
+	}
+	get argument(): typeof this.$argument {
+		return this.$argument;
 	}
 
-	export class Tree {
-		constructor(public type: Enums.TreeTypes, public precedence: number) {}
+	operator: UnaryOp;
 
-		clone(): typeof this {
-			const clone = Object.create(Object.getPrototypeOf(this));
+	constructor(
+		public parent: Exclude<TreeTypesType, NumeralTree>,
+		public opToken: Token,
+	) {
+		super(TreeTypes.UnaryOp, UNARYOP_PRECEDENCE);
 
-			Object.defineProperties(clone, Object.getOwnPropertyDescriptors(this));
-
-			return clone;
-		}
+		this.operator = getUnaryOpWithSymbol(opToken.symbol);
 	}
 
-	export type TreeTypesType =
-		| RootTree
-		| NumeralTree
-		| UnaryOpTree
-		| BinaryOpTree;
+	toString(level: number = 1): string {
+		const indent = "\n" + "  \u2503  ".repeat(level);
 
-	const ROOT_PRECEDENCE = -1;
-	const NUMERAL_PRECEDENCE = Number.MAX_SAFE_INTEGER + 1;
-	const UNARYOP_PRECEDENCE = Number.MAX_SAFE_INTEGER;
-
-	export class RootTree extends Tree {
-		$content?: Exclude<TreeTypesType, RootTree>;
-
-		set content(content: Exclude<TreeTypesType, RootTree>) {
-			this.$content = content;
-			content.parent = this;
-		}
-		get content(): typeof this.$content {
-			return this.$content;
-		}
-
-		constructor() {
-			super(Enums.TreeTypes.Root, ROOT_PRECEDENCE);
-		}
-
-		toString(): string {
-			return this.content ? this.content.toString() : "<Empty>";
-		}
-
-		toJSON(): Object {
-			return this.content?.toJSON() ?? {};
-		}
+		return `<Unary>${indent}UOp: ${this.opToken} (${
+			this.operator.id
+		})${indent}Arg: ${
+			this.argument ? this.argument.toString(level + 1) : "<Empty>"
+		}`;
 	}
 
-	export class NumeralTree extends Tree {
-		constructor(
-			public parent: Exclude<TreeTypesType, NumeralTree>,
-			public numToken: Tokenizer.Token,
-		) {
-			super(Enums.TreeTypes.Numeral, NUMERAL_PRECEDENCE);
-		}
+	toJSON(): Object {
+		return {
+			operator: {
+				...this.opToken.toJSON(),
+				...this.operator,
+				type: UnaryOpTypes[this.operator.type],
+			},
+			argument: this.argument?.toJSON() ?? {},
+		};
+	}
+}
 
-		toString(): string {
-			return `<Num> ${this.numToken}`;
-		}
+export class BinaryOpTree extends Tree {
+	$left?: Exclude<TreeTypesType, RootTree>;
+	$right?: Exclude<TreeTypesType, RootTree>;
 
-		toJSON(): Object {
-			return {
-				numeral: this.numToken.toJSON(),
-			};
-		}
+	set left(left: Exclude<TreeTypesType, RootTree>) {
+		this.$left = left;
+		left.parent = this;
+	}
+	get left(): typeof this.$left {
+		return this.$left;
 	}
 
-	export class UnaryOpTree extends Tree {
-		$argument?: Exclude<TreeTypesType, RootTree>;
-
-		set argument(argument: Exclude<TreeTypesType, RootTree>) {
-			this.$argument = argument;
-			argument.parent = this;
-		}
-		get argument(): typeof this.$argument {
-			return this.$argument;
-		}
-
-		operator: Registry.UnaryOp;
-
-		constructor(
-			public parent: Exclude<TreeTypesType, NumeralTree>,
-			public opToken: Tokenizer.Token,
-		) {
-			super(Enums.TreeTypes.UnaryOp, UNARYOP_PRECEDENCE);
-
-			this.operator = Registry.getUnaryOpWithSymbol(opToken.symbol);
-		}
-
-		toString(level: number = 1): string {
-			const indent = "\n" + "  \u2503  ".repeat(level);
-
-			return `<Unary>${indent}UOp: ${this.opToken} (${
-				this.operator.id
-			})${indent}Arg: ${
-				this.argument ? this.argument.toString(level + 1) : "<Empty>"
-			}`;
-		}
-
-		toJSON(): Object {
-			return {
-				operator: {
-					...this.opToken.toJSON(),
-					...this.operator,
-					type: Enums.UnaryOpTypes[this.operator.type],
-				},
-				argument: this.argument?.toJSON() ?? {},
-			};
-		}
+	set right(right: Exclude<TreeTypesType, RootTree>) {
+		this.$right = right;
+		right.parent = this;
+	}
+	get right(): typeof this.$right {
+		return this.$right;
 	}
 
-	export class BinaryOpTree extends Tree {
-		$left?: Exclude<TreeTypesType, RootTree>;
-		$right?: Exclude<TreeTypesType, RootTree>;
+	operator: BinaryOp;
 
-		set left(left: Exclude<TreeTypesType, RootTree>) {
-			this.$left = left;
-			left.parent = this;
-		}
-		get left(): typeof this.$left {
-			return this.$left;
-		}
+	constructor(
+		public parent: Exclude<TreeTypesType, NumeralTree>,
+		public opToken: Token,
+	) {
+		const operator = getBinaryOpWithSymbol(opToken.symbol);
 
-		set right(right: Exclude<TreeTypesType, RootTree>) {
-			this.$right = right;
-			right.parent = this;
-		}
-		get right(): typeof this.$right {
-			return this.$right;
-		}
+		super(TreeTypes.BinaryOp, operator.precedence);
 
-		operator: Registry.BinaryOp;
-
-		constructor(
-			public parent: Exclude<TreeTypesType, NumeralTree>,
-			public opToken: Tokenizer.Token,
-		) {
-			const operator = Registry.getBinaryOpWithSymbol(opToken.symbol);
-
-			super(Enums.TreeTypes.BinaryOp, operator.precedence);
-
-			this.operator = operator;
-		}
-
-		toString(level: number = 1): string {
-			const indent = "\n" + "  \u2503  ".repeat(level);
-
-			return `<Binary>${indent}BOp: ${this.opToken} (${
-				this.operator.id
-			})${indent}Lft: ${
-				this.left ? this.left.toString(level + 1) : "<Empty>"
-			}${indent}Rgt: ${
-				this.right ? this.right.toString(level + 1) : "<Empty>"
-			}`;
-		}
-
-		toJSON(): Object {
-			return {
-				operator: { ...this.opToken.toJSON(), ...this.operator },
-				left: this.left?.toJSON() ?? {},
-				right: this.right?.toJSON() ?? {},
-			};
-		}
+		this.operator = operator;
 	}
 
-	function handleBracket(token: Tokenizer.Token, runtime: ParserRuntime): void {
-		if (token.symbol === ")") {
-			throw new SyntaxError(`Lone right bracket at ${runtime.position()}.`);
-		}
+	toString(level: number = 1): string {
+		const indent = "\n" + "  \u2503  ".repeat(level);
 
-		if (runtime.pointer.type === Enums.TreeTypes.Numeral) {
-			throw new SyntaxError(
-				`Missing operator before bracket at ${runtime.position()}.`,
-			);
-		}
-
-		const open = runtime.index;
-		let close = open;
-
-		let nestLevel = 1;
-
-		while (close < runtime.tokens.length - 1) {
-			close++;
-
-			if (runtime.tokens[close].type !== Enums.TokenTypes.Bracket) continue;
-
-			if (runtime.tokens[close].symbol === "(") nestLevel++;
-			else nestLevel--;
-
-			if (nestLevel === 0) break;
-		}
-
-		if (nestLevel !== 0) {
-			throw new SyntaxError(`Unbalanced bracket at ${runtime.position()}.`);
-		}
-
-		if (close === open + 1) {
-			throw new SyntaxError(`Empty brackets at ${runtime.position()}.`);
-		}
-
-		runtime.index = close;
-
-		const bracketTree = parse(runtime.tokens.slice(open + 1, close));
-
-		bracketTree.content!.precedence = NUMERAL_PRECEDENCE;
-
-		switch (runtime.pointer.type) {
-			case Enums.TreeTypes.Root: {
-				const pointer = <RootTree>runtime.pointer;
-
-				runtime.pointer = pointer.content = bracketTree.content!;
-
-				break;
-			}
-
-			case Enums.TreeTypes.UnaryOp: {
-				const pointer = <UnaryOpTree>runtime.pointer;
-
-				runtime.pointer = pointer.argument = bracketTree.content!;
-
-				break;
-			}
-
-			case Enums.TreeTypes.BinaryOp: {
-				const pointer = <BinaryOpTree>runtime.pointer;
-
-				runtime.pointer = pointer.right = bracketTree.content!;
-
-				break;
-			}
-		}
+		return `<Binary>${indent}BOp: ${this.opToken} (${
+			this.operator.id
+		})${indent}Lft: ${
+			this.left ? this.left.toString(level + 1) : "<Empty>"
+		}${indent}Rgt: ${this.right ? this.right.toString(level + 1) : "<Empty>"}`;
 	}
 
-	function handleNumeral(token: Tokenizer.Token, runtime: ParserRuntime): void {
-		if (runtime.pointer.type === Enums.TreeTypes.Numeral) {
-			throw new SyntaxError(
-				`Missing operator between numerals at ${runtime.position()}.`,
-			);
-		}
+	toJSON(): Object {
+		return {
+			operator: { ...this.opToken.toJSON(), ...this.operator },
+			left: this.left?.toJSON() ?? {},
+			right: this.right?.toJSON() ?? {},
+		};
+	}
+}
 
-		const numeralTree = new NumeralTree(
-			<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
-			token,
+function handleBracket(token: Token, runtime: ParserRuntime): void {
+	if (token.symbol === ")") {
+		throw new SyntaxError(`Lone right bracket at ${runtime.position()}.`);
+	}
+
+	if (runtime.pointer.type === TreeTypes.Numeral) {
+		throw new SyntaxError(
+			`Missing operator before bracket at ${runtime.position()}.`,
 		);
-
-		switch (runtime.pointer.type) {
-			case Enums.TreeTypes.Root: {
-				const pointer = <RootTree>runtime.pointer;
-
-				runtime.pointer = pointer.content = numeralTree;
-
-				break;
-			}
-
-			case Enums.TreeTypes.UnaryOp: {
-				const pointer = <UnaryOpTree>runtime.pointer;
-
-				runtime.pointer = pointer.argument = numeralTree;
-
-				break;
-			}
-
-			case Enums.TreeTypes.BinaryOp: {
-				const pointer = <BinaryOpTree>runtime.pointer;
-
-				runtime.pointer = pointer.right = numeralTree;
-
-				break;
-			}
-		}
 	}
 
-	function handleUnaryOp(token: Tokenizer.Token, runtime: ParserRuntime): void {
-		while (
-			runtime.pointer.type !== Enums.TreeTypes.Root &&
-			runtime.pointer.precedence > UNARYOP_PRECEDENCE
-		) {
-			runtime.pointer = (<Exclude<TreeTypesType, RootTree>>(
-				runtime.pointer
-			)).parent;
-		}
+	const open = runtime.index;
+	let close = open;
 
-		const unaryOp = Registry.getUnaryOpWithSymbol(token.symbol);
+	let nestLevel = 1;
 
-		const isPostOp = unaryOp.type === Enums.UnaryOpTypes.Postfix;
+	while (close < runtime.tokens.length - 1) {
+		close++;
 
-		if (
-			isPostOp &&
-			!(
-				(runtime.pointer.type === Enums.TreeTypes.Root &&
-					(<RootTree>runtime.pointer).content) ||
-				(runtime.pointer.type === Enums.TreeTypes.UnaryOp &&
-					(<UnaryOpTree>runtime.pointer).argument) ||
-				(runtime.pointer.type === Enums.TreeTypes.BinaryOp &&
-					(<BinaryOpTree>runtime.pointer).right)
-			)
-		) {
-			throw new SyntaxError(
-				`Missing entry before postfix unary operator at ${runtime.position()}.`,
-			);
-		}
+		if (runtime.tokens[close].type !== TokenTypes.Bracket) continue;
 
-		const unaryOpTree = new UnaryOpTree(
-			<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
-			token,
-		);
+		if (runtime.tokens[close].symbol === "(") nestLevel++;
+		else nestLevel--;
 
-		switch (runtime.pointer.type) {
-			case Enums.TreeTypes.Root: {
-				const pointer = <RootTree>runtime.pointer;
-
-				if (isPostOp) unaryOpTree.argument = pointer.content!.clone();
-
-				runtime.pointer = pointer.content = unaryOpTree;
-
-				break;
-			}
-
-			case Enums.TreeTypes.UnaryOp: {
-				const pointer = <UnaryOpTree>runtime.pointer;
-
-				if (isPostOp) unaryOpTree.argument = pointer.argument!.clone();
-
-				runtime.pointer = pointer.argument = unaryOpTree;
-
-				break;
-			}
-
-			case Enums.TreeTypes.BinaryOp: {
-				const pointer = <BinaryOpTree>runtime.pointer;
-
-				if (isPostOp) unaryOpTree.argument = pointer.right!.clone();
-
-				runtime.pointer = pointer.right = unaryOpTree;
-
-				break;
-			}
-		}
+		if (nestLevel === 0) break;
 	}
 
-	function handleBinaryOp(
-		token: Tokenizer.Token,
-		runtime: ParserRuntime,
-	): void {
-		if (runtime.pointer.type === Enums.TreeTypes.Root) {
-			throw new SyntaxError(
-				`Missing entry before binary operator at ${runtime.position()}.`,
-			);
+	if (nestLevel !== 0) {
+		throw new SyntaxError(`Unbalanced bracket at ${runtime.position()}.`);
+	}
+
+	if (close === open + 1) {
+		throw new SyntaxError(`Empty brackets at ${runtime.position()}.`);
+	}
+
+	runtime.index = close;
+
+	const bracketTree = parse(runtime.tokens.slice(open + 1, close));
+
+	bracketTree.content!.precedence = NUMERAL_PRECEDENCE;
+
+	switch (runtime.pointer.type) {
+		case TreeTypes.Root: {
+			const pointer = <RootTree>runtime.pointer;
+
+			runtime.pointer = pointer.content = bracketTree.content!;
+
+			break;
 		}
 
-		const binaryOp = Registry.getBinaryOpWithSymbol(token.symbol);
+		case TreeTypes.UnaryOp: {
+			const pointer = <UnaryOpTree>runtime.pointer;
 
-		while (
-			(<Exclude<TreeTypesType, RootTree>>runtime.pointer).precedence >=
-			binaryOp.precedence
-		) {
-			runtime.pointer = (<Exclude<TreeTypesType, RootTree>>(
-				runtime.pointer
-			)).parent;
+			runtime.pointer = pointer.argument = bracketTree.content!;
+
+			break;
 		}
 
-		const binaryOpTree = new BinaryOpTree(
-			<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
-			token,
+		case TreeTypes.BinaryOp: {
+			const pointer = <BinaryOpTree>runtime.pointer;
+
+			runtime.pointer = pointer.right = bracketTree.content!;
+
+			break;
+		}
+	}
+}
+
+function handleNumeral(token: Token, runtime: ParserRuntime): void {
+	if (runtime.pointer.type === TreeTypes.Numeral) {
+		throw new SyntaxError(
+			`Missing operator between numerals at ${runtime.position()}.`,
 		);
+	}
 
-		switch (runtime.pointer.type) {
-			case Enums.TreeTypes.Root: {
-				const pointer = <RootTree>runtime.pointer;
+	const numeralTree = new NumeralTree(
+		<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
+		token,
+	);
 
-				binaryOpTree.left = pointer.content!.clone();
+	switch (runtime.pointer.type) {
+		case TreeTypes.Root: {
+			const pointer = <RootTree>runtime.pointer;
 
-				runtime.pointer = pointer.content = binaryOpTree;
+			runtime.pointer = pointer.content = numeralTree;
 
-				break;
-			}
+			break;
+		}
 
-			case Enums.TreeTypes.UnaryOp: {
-				const pointer = <UnaryOpTree>runtime.pointer;
+		case TreeTypes.UnaryOp: {
+			const pointer = <UnaryOpTree>runtime.pointer;
 
-				binaryOpTree.left = pointer.clone();
+			runtime.pointer = pointer.argument = numeralTree;
 
-				runtime.pointer = pointer.argument = binaryOpTree;
+			break;
+		}
 
-				break;
-			}
+		case TreeTypes.BinaryOp: {
+			const pointer = <BinaryOpTree>runtime.pointer;
 
-			case Enums.TreeTypes.BinaryOp: {
-				const pointer = <BinaryOpTree>runtime.pointer;
+			runtime.pointer = pointer.right = numeralTree;
 
-				binaryOpTree.left = pointer.right!.clone();
+			break;
+		}
+	}
+}
 
-				runtime.pointer = pointer.right = binaryOpTree;
+function handleUnaryOp(token: Token, runtime: ParserRuntime): void {
+	while (
+		runtime.pointer.type !== TreeTypes.Root &&
+		runtime.pointer.precedence > UNARYOP_PRECEDENCE
+	) {
+		runtime.pointer = (<Exclude<TreeTypesType, RootTree>>(
+			runtime.pointer
+		)).parent;
+	}
 
-				break;
-			}
+	const unaryOp = getUnaryOpWithSymbol(token.symbol);
+
+	const isPostOp = unaryOp.type === UnaryOpTypes.Postfix;
+
+	if (
+		isPostOp &&
+		!(
+			(runtime.pointer.type === TreeTypes.Root &&
+				(<RootTree>runtime.pointer).content) ||
+			(runtime.pointer.type === TreeTypes.UnaryOp &&
+				(<UnaryOpTree>runtime.pointer).argument) ||
+			(runtime.pointer.type === TreeTypes.BinaryOp &&
+				(<BinaryOpTree>runtime.pointer).right)
+		)
+	) {
+		throw new SyntaxError(
+			`Missing entry before postfix unary operator at ${runtime.position()}.`,
+		);
+	}
+
+	const unaryOpTree = new UnaryOpTree(
+		<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
+		token,
+	);
+
+	switch (runtime.pointer.type) {
+		case TreeTypes.Root: {
+			const pointer = <RootTree>runtime.pointer;
+
+			if (isPostOp) unaryOpTree.argument = pointer.content!.clone();
+
+			runtime.pointer = pointer.content = unaryOpTree;
+
+			break;
+		}
+
+		case TreeTypes.UnaryOp: {
+			const pointer = <UnaryOpTree>runtime.pointer;
+
+			if (isPostOp) unaryOpTree.argument = pointer.argument!.clone();
+
+			runtime.pointer = pointer.argument = unaryOpTree;
+
+			break;
+		}
+
+		case TreeTypes.BinaryOp: {
+			const pointer = <BinaryOpTree>runtime.pointer;
+
+			if (isPostOp) unaryOpTree.argument = pointer.right!.clone();
+
+			runtime.pointer = pointer.right = unaryOpTree;
+
+			break;
+		}
+	}
+}
+
+function handleBinaryOp(token: Token, runtime: ParserRuntime): void {
+	if (runtime.pointer.type === TreeTypes.Root) {
+		throw new SyntaxError(
+			`Missing entry before binary operator at ${runtime.position()}.`,
+		);
+	}
+
+	const binaryOp = getBinaryOpWithSymbol(token.symbol);
+
+	while (
+		(<Exclude<TreeTypesType, RootTree>>runtime.pointer).precedence >=
+		binaryOp.precedence
+	) {
+		runtime.pointer = (<Exclude<TreeTypesType, RootTree>>(
+			runtime.pointer
+		)).parent;
+	}
+
+	const binaryOpTree = new BinaryOpTree(
+		<Exclude<TreeTypesType, NumeralTree>>runtime.pointer,
+		token,
+	);
+
+	switch (runtime.pointer.type) {
+		case TreeTypes.Root: {
+			const pointer = <RootTree>runtime.pointer;
+
+			binaryOpTree.left = pointer.content!.clone();
+
+			runtime.pointer = pointer.content = binaryOpTree;
+
+			break;
+		}
+
+		case TreeTypes.UnaryOp: {
+			const pointer = <UnaryOpTree>runtime.pointer;
+
+			binaryOpTree.left = pointer.clone();
+
+			runtime.pointer = pointer.argument = binaryOpTree;
+
+			break;
+		}
+
+		case TreeTypes.BinaryOp: {
+			const pointer = <BinaryOpTree>runtime.pointer;
+
+			binaryOpTree.left = pointer.right!.clone();
+
+			runtime.pointer = pointer.right = binaryOpTree;
+
+			break;
 		}
 	}
 }

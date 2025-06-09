@@ -1,4 +1,4 @@
-import { Calculator } from "../src/calculator/calculator";
+import * as Calculator from "../src/calculator/calculator";
 
 function run(input: string, value: number): void {
 	expect(Calculator.value(input)).toBe(value);

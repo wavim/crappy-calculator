@@ -1,10 +1,8 @@
 import "./index.scss";
 
-import { Enums } from "./calculator/constants/enums";
-import { Tokenizer } from "./calculator/main/tokenizer";
-import { Parser } from "./calculator/main/parser";
-import { Evaluator } from "./calculator/main/evaluator";
-import { Calculator } from "./calculator/calculator";
+import { calculate } from "./calculator/calculator";
+import { TokenTypes } from "./calculator/constants/enums";
+import { Token } from "./calculator/main/tokenizer";
 
 const RENDER_LENGTH_LIMIT = 50;
 
@@ -18,11 +16,11 @@ function updateResult(input: string): void {
 	console.clear();
 	resultElement.classList.remove("error");
 
-	let result!: ReturnType<typeof Calculator.calculate>;
+	let result!: ReturnType<typeof calculate>;
 	let time!: number;
 	try {
 		const start = performance.now();
-		result = Calculator.calculate(
+		result = calculate(
 			input.length === 0
 				? <string>inputElement.getAttribute("placeholder")
 				: input,
@@ -45,7 +43,7 @@ function updateResult(input: string): void {
 	renderResult(result.tokens, result.value);
 }
 
-function renderResult(tokens: Tokenizer.Token[], value: number): void {
+function renderResult(tokens: Token[], value: number): void {
 	resultElement.innerHTML = "";
 
 	if (
@@ -59,7 +57,7 @@ function renderResult(tokens: Tokenizer.Token[], value: number): void {
 		for (const token of tokens) {
 			const tokenElement = document.createElement("p");
 			tokenElement.textContent = token.symbol;
-			tokenElement.className = Enums.TokenTypes[token.type];
+			tokenElement.className = TokenTypes[token.type];
 			resultElement.appendChild(tokenElement);
 		}
 	}

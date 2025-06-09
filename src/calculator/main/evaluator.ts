@@ -1,83 +1,83 @@
-import { Enums } from "../constants/enums";
-
-import { Registry } from "../registry/registry";
-
-import { Parser } from "./parser";
+import { TreeTypes } from "../constants/enums";
+import {
+	existConstantWithSymbol,
+	getBinaryOpWithSymbol,
+	getConstantWithSymbol,
+	getUnaryOpWithSymbol,
+} from "../registry/registry";
+import {
+	BinaryOpTree,
+	NumeralTree,
+	RootTree,
+	TreeTypesType,
+	UnaryOpTree,
+} from "./parser";
 
 /**
- * Evaluate the final expression value of ASTs
+ * Main evaluation entry for ASTs
  */
-export namespace Evaluator {
-	/**
-	 * Main evaluation entry for ASTs
-	 */
-	export function evaluate(tree: Parser.TreeTypesType): number {
-		switch (tree.type) {
-			case Enums.TreeTypes.Root: {
-				return handleRootTree(<Parser.RootTree>tree);
-			}
-
-			case Enums.TreeTypes.Numeral: {
-				return handleNumeralTree(<Parser.NumeralTree>tree);
-			}
-
-			case Enums.TreeTypes.UnaryOp: {
-				return handleUnaryOpTree(<Parser.UnaryOpTree>tree);
-			}
-
-			case Enums.TreeTypes.BinaryOp: {
-				return handleBinaryOpTree(<Parser.BinaryOpTree>tree);
-			}
-		}
-	}
-
-	function handleRootTree(tree: Parser.RootTree): number {
-		if (!tree.content) throw new SyntaxError("Evaluating empty tree.");
-
-		return evaluate(tree.content);
-	}
-
-	function handleNumeralTree(tree: Parser.NumeralTree): number {
-		const symbol = tree.numToken.symbol;
-
-		return Registry.existConstantWithSymbol(symbol)
-			? Registry.getConstantWithSymbol(symbol).value
-			: Number(symbol);
-	}
-
-	function handleUnaryOpTree(tree: Parser.UnaryOpTree): number {
-		if (!tree.argument) {
-			throw new SyntaxError(
-				`Unary operator lacks argument at ${tree.opToken.position}.`,
-			);
+export function evaluate(tree: TreeTypesType): number {
+	switch (tree.type) {
+		case TreeTypes.Root: {
+			return handleRootTree(<RootTree>tree);
 		}
 
-		const callback = Registry.getUnaryOpWithSymbol(
-			tree.operator.symbol,
-		).callback;
-
-		return callback(evaluate(tree.argument));
-	}
-
-	function handleBinaryOpTree(tree: Parser.BinaryOpTree): number {
-		if (!tree.left) {
-			throw new SyntaxError(
-				`Binary operator lacks left operand at ${tree.opToken.position}.`,
-			);
-		}
-		if (!tree.right) {
-			throw new SyntaxError(
-				`Binary operator lacks right operand at ${tree.opToken.position}.`,
-			);
+		case TreeTypes.Numeral: {
+			return handleNumeralTree(<NumeralTree>tree);
 		}
 
-		const callback = Registry.getBinaryOpWithSymbol(
-			tree.operator.symbol,
-		).callback;
+		case TreeTypes.UnaryOp: {
+			return handleUnaryOpTree(<UnaryOpTree>tree);
+		}
 
-		const left = evaluate(tree.left);
-		const right = evaluate(tree.right);
-
-		return callback(left, right);
+		case TreeTypes.BinaryOp: {
+			return handleBinaryOpTree(<BinaryOpTree>tree);
+		}
 	}
+}
+
+function handleRootTree(tree: RootTree): number {
+	if (!tree.content) throw new SyntaxError("Evaluating empty tree.");
+
+	return evaluate(tree.content);
+}
+
+function handleNumeralTree(tree: NumeralTree): number {
+	const symbol = tree.numToken.symbol;
+
+	return existConstantWithSymbol(symbol)
+		? getConstantWithSymbol(symbol).value
+		: Number(symbol);
+}
+
+function handleUnaryOpTree(tree: UnaryOpTree): number {
+	if (!tree.argument) {
+		throw new SyntaxError(
+			`Unary operator lacks argument at ${tree.opToken.position}.`,
+		);
+	}
+
+	const callback = getUnaryOpWithSymbol(tree.operator.symbol).callback;
+
+	return callback(evaluate(tree.argument));
+}
+
+function handleBinaryOpTree(tree: BinaryOpTree): number {
+	if (!tree.left) {
+		throw new SyntaxError(
+			`Binary operator lacks left operand at ${tree.opToken.position}.`,
+		);
+	}
+	if (!tree.right) {
+		throw new SyntaxError(
+			`Binary operator lacks right operand at ${tree.opToken.position}.`,
+		);
+	}
+
+	const callback = getBinaryOpWithSymbol(tree.operator.symbol).callback;
+
+	const left = evaluate(tree.left);
+	const right = evaluate(tree.right);
+
+	return callback(left, right);
 }
