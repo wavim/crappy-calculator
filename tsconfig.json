@@ -1,16 +1,20 @@
 {
+	"include": ["src/**/*"],
+
 	"compilerOptions": {
+		"strict": true,
+
 		"target": "ESNext",
 		"module": "ESNext",
+
 		"moduleResolution": "bundler",
-		"allowSyntheticDefaultImports": true,
-		"esModuleInterop": true,
-		"types": ["vite/client", "jest"],
-		"sourceMap": true,
-		"noEmit": true,
 		"isolatedModules": true,
-		"strict": true,
-		"noFallthroughCasesInSwitch": true
-	},
-	"include": ["src/**/*", "tests"]
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+
+		"noEmit": true,
+		"sourceMap": true,
+		"declaration": true,
+		"declarationDir": "./dist/types",
+	}
 }
