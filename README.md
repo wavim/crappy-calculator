@@ -104,11 +104,11 @@ Remember to play with the demo!
 ### Notes
 
 This naive project implemented when I knew nothing of parsing theory is nowhere near performant. A
-simple LL recursion parser would have did a much better job.
+simpler LL recursive descent parser could have done a better job.
 
-There was of thought of a new version, by writing a runtime lexer-parser generator called
+There was a thought for a new version, by writing a runtime lexer-parser generator called
 [XFLIP](https://github.com/wavim/xflip). It's now abandoned after deliberate considerations. Pity. I
 admit that I'm not especially interested in parsing theory.
 
-Do note that the current version, albeit stupid, does work and function correctly. Just some regrets
+Do note that the current version, albeit dumb, does work and function correctly. Just some regrets
 in my heart that I would not be able to make it the thing I wished, crappy, isn't it? That's all.
