@@ -1,41 +1,11 @@
-### Crappy Calculator
+[Notes](#notes)
 
-[See notes](#notes).
+A calculator that supports custom constants, unary operators /functions and
+binary operators/functions.
 
-A web calculator that supports custom defined constants, unary operators (functions) and binary
-operators (functions).
-
-The calculator logic is implemented with a tokenizer (lexer), a LL parser and an evaluator, without
-the help of generator tools.
-
-> It is worth noting that I had no prior knowledge on parsing theory when I wrote this, this is
-> completely written from scratch.
-
-- The tokenizer is responsible for lexing the input string into lexical tokens with a Deterministic
-  Pushdown Automaton (basically, with a stack/lookbehind).
-- The ad hoc left-most derivation parser is responsible for constructing an Abstract Syntax Tree
-  from the tokens.
-- The evaluator is responsible for recursively evaluating the tree to get the final expression
-  value.
-
-> The evaluator ultimately relies on JS, and is thus prone to all precision errors in JS.
-
-Brackets in the calculator are always ( and ), with numerals essentially anything:  
-1, 2.3, 0.05, 7.4e10, 10E-8, 0.1e+2 etc.  
-All spaces would be ignored on tokenization (unless it breaks something apart e.g. cos → c os, of
-course!), add them if you like.
-
-New constants, unary operators (functions) and binary operators (functions) can be defined in no
-time inside a registry, specifying some details for them (e.g. precedence for binary operators).
-
-> Binary operators (functions) of the same precedence are left associative e.g. 1-2+3 = ((1-2)+3).  
-> Unary operators (functions) are right associative e.g. -4! = (-(4!)).
-
-> Check the files in src/calculator/registry/, the code should be self-explanatory.
-
-> Items symbols registered are CASE SENSITIVE.
-
-To check out the calculator, click on the GitHub Page under the repository description :D
+- The tokenizer uses a lookbehind to lex the input expression into tokens
+- The parser is responsible for constructing a parse tree from the tokens
+- The evaluator recursively evaluates the parsed tree for the final value
 
 Below are the items registered in the master branch.
 
@@ -60,7 +30,7 @@ Below are the items registered in the master branch.
 - ceil(x) (ceil)
 - round(x) (round)
 - sqrt(x) (square root)
-- exp(x) (exponentiation base $e$)
+- exp(x) (exponential)
 - Ln(x) (natural log)
 - log(x) (log base 10)
 - sin(x) (sin radians)
@@ -90,25 +60,22 @@ Below are the items registered in the master branch.
 - (n) C (r) (combination)
 - (n) gcd (r) (integer gcd)
 
-> It is worth noting that in some cases brackets () are not needed e.g. (x)d and xd, nPr and
-> (n)P(r), are the same.  
-> However, this is not always the case, and brackets should be preferred to avoid ambiguity.  
-> If not, expressions like -1^0.5 = NaN can be confusing as you might think it is equivalent to
-> -(1^0.5), but it is actually interpreted as (-1)^0.5.
-
-You can also define your own items, or mess around with the existing. (Switching '+'s with '-'s is
-evilly fun)
-
-Remember to play with the demo!
+> It is worth noting that in some cases brackets are not needed e.g. (x)d and
+> xd, nPr and (n)P(r). However, this is not always the case.
 
 ### Notes
 
-This naive project implemented when I knew nothing of parsing theory is nowhere near performant. A
-simpler LL recursive descent parser could have done a better job.
+This naive project implemented when I knew nothing of parsing theory is nowhere
+near smart or performant. A stack-based modified (to support custom definitions)
+LL recursive descent parser could have done a better job.
 
-There was a thought for a new version, by writing a runtime lexer-parser generator called
-[XFLIP](https://github.com/wavim/xflip). It's now abandoned after deliberate considerations. Pity. I
-admit that I'm not especially interested in parsing theory.
+There was a plan for a new version, by writing a runtime lexer-parser generator
+called [XFLIP](https://github.com/wavim/xflip). It's now abandoned after
+deliberate considerations to focus on other fields. I admit that I'm not
+especially interested in parsing theory.
 
-Do note that the current version, albeit dumb, does work and function correctly. Just some regrets
-in my heart that I would not be able to make it the thing I wished, crappy, isn't it? That's all.
+The current version, albeit dumb, does work and function correctly in most
+situations (postfix unary operators are known to have precedence issues, but I
+don't really want to fix the old codebase).
+
+Crappy, isn't it?
